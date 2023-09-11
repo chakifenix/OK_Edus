@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:ok_edus/core/api/api-call.dart';
 import 'package:ok_edus/features/login-page/view/login-page-screen.dart';
 import 'package:ok_edus/features/main-bar-page/view/main-bar-screen.dart';
+import 'package:ok_edus/features/main-bar-page/view/profile-screen.dart';
 import 'package:ok_edus/features/onboarding-page/view/onboarding-screen.dart';
 import 'package:ok_edus/features/splash-page/view/splash-screen.dart';
 

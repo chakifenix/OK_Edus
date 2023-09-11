@@ -16,7 +16,6 @@ class SubjectsService {
     final path = input; // Путь к эндпоинту API
 
     final url = '$_baseUrl$path';
-
     final response = await dio.get(
       url,
       options: Options(headers: {
@@ -119,7 +118,7 @@ class SubjectsService {
     Dio dio = Dio();
     final url =
         'https://mobile.mektep.edu.kz/api_ok_edus/public/api/ru/messenger/get-chat-history';
-    final data = {'channel_id': 'presence-chat.69275_433127', 'page': '1'};
+    final data = {'channel_id': 'presence-chat.$channelId', 'page': '1'};
 
     Response response;
     try {
@@ -198,12 +197,18 @@ class SubjectsService {
 
   static Future<void> storeToken(String token) async {
     await storage.write(
-        key: 'token', value: '2557|f1t7rDKbCtJzfXrm89Y9tj5KFwbyHRMTAl4MNhVx');
+      key: 'token',
+      value: '2557|f1t7rDKbCtJzfXrm89Y9tj5KFwbyHRMTAl4MNhVx',
+    );
   }
 
   static Future<String?> getToken() async {
     return await storage.read(key: 'token');
   }
+
+  AndroidOptions _getAndroidOptions() => const AndroidOptions(
+        encryptedSharedPreferences: true,
+      );
 }
 
 // Future<void> chatSendMessage(String text) async {
