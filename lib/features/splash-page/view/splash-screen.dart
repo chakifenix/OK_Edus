@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:ok_edus/features/login-page/view/login-page-screen.dart';
 import 'package:ok_edus/features/onboarding-page/view/onboarding-screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -12,10 +14,26 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    Future.delayed(Duration(seconds: 3)).then((value) {
-      Navigator.of(context).pushReplacement(
-          CupertinoPageRoute(builder: (context) => OnboardingScreen()));
-    });
+    checkFirstLaunch();
+  }
+
+  void checkFirstLaunch() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    bool isFirstLaunch = preferences.getBool('isFirstLaunch') ?? true;
+
+    if (isFirstLaunch) {
+      print(isFirstLaunch);
+      Future.delayed(Duration(seconds: 3)).then((value) {
+        Navigator.of(context).pushReplacement(
+            CupertinoPageRoute(builder: (context) => OnboardingScreen()));
+      });
+      preferences.setBool('isFirstLaunch', false);
+    } else {
+      Future.delayed(Duration(seconds: 3)).then((value) {
+        Navigator.of(context).pushReplacement(
+            CupertinoPageRoute(builder: (context) => LoginPageScreen()));
+      });
+    }
   }
 
   @override

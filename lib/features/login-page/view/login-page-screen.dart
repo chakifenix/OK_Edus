@@ -9,6 +9,7 @@ import 'package:ok_edus/core/api/login_service.dart';
 import 'package:ok_edus/features/main-bar-page/view/main-bar-screen.dart';
 import 'package:ok_edus/main.dart';
 import 'package:ok_edus/model/user_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPageScreen extends StatefulWidget {
   LoginPageScreen({super.key});
@@ -19,7 +20,8 @@ class LoginPageScreen extends StatefulWidget {
 
 class _LoginPageScreenState extends State<LoginPageScreen> {
   String? token;
-
+  bool? isLogged;
+  @override
   final _login = LoginService();
 
   var emailController = TextEditingController();
@@ -63,6 +65,7 @@ class _LoginPageScreenState extends State<LoginPageScreen> {
         colors: [Color(0xFF8BE1DE), Color(0xFF398FA3)],
       )),
       child: Scaffold(
+        //resizeToAvoidBottomInset: false,
         backgroundColor: Colors.transparent,
         body: Stack(
           children: [
@@ -176,10 +179,15 @@ class _LoginPageScreenState extends State<LoginPageScreen> {
                         try {
                           await login(
                               emailController.text, passwordController.text);
+                          SharedPreferences prefs =
+                              await SharedPreferences.getInstance();
+                          isLogged = prefs.getBool('isLogged');
+                          await prefs.setBool('isLogged', true);
                           Navigator.of(context).pushAndRemoveUntil(
                               MaterialPageRoute(
                                   builder: (context) => MainBarScreen()),
                               (route) => false);
+
                           //print(token);
 
                           print(emailController.text);

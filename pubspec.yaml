@@ -30,6 +30,17 @@ dependencies:
   flutter_secure_storage: ^9.0.0
   web_socket_channel: ^2.4.0
   smooth_page_indicator: ^1.1.0
+  shared_preferences: ^2.2.1
+  flutter_native_splash: ^2.3.2
+
+flutter_native_splash:
+  andriod: true
+  ios: true
+  web: false
+
+  #color: "#FFCC00"
+  background_image: "images/Splash.png"
+  image: "images/logo_edus2.png"
   
   
 

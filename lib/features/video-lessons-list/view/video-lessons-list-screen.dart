@@ -31,35 +31,36 @@ class _VideoLessonsListScreenState extends State<VideoLessonsListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: getVid(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            print(videoLesson.length);
-            return Scaffold(
-              appBar: AppBar(
-                leading: BackButton(color: Color(0xFF1E88E5)),
-                backgroundColor: Colors.white,
-                title: Text(
-                  'Видео',
-                  style: TextStyle(
-                    color: Color(0xFF1F2024),
-                    fontSize: 20,
-                    fontFamily: 'SF Pro Display',
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-              body: Container(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height,
-                decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                  begin: Alignment(0.74, -0.67),
-                  end: Alignment(-0.74, 0.67),
-                  colors: [Color(0xFF8BE1DE), Color(0xFF398FA3)],
-                )),
-                child: Container(
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height,
+      decoration: BoxDecoration(
+          gradient: LinearGradient(
+        begin: Alignment(0.74, -0.67),
+        end: Alignment(-0.74, 0.67),
+        colors: [Color(0xFF8BE1DE), Color(0xFF398FA3)],
+      )),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          leading: BackButton(color: Color(0xFF1E88E5)),
+          backgroundColor: Colors.white,
+          title: Text(
+            'Видео',
+            style: TextStyle(
+              color: Color(0xFF1F2024),
+              fontSize: 20,
+              fontFamily: 'SF Pro Display',
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
+        body: FutureBuilder(
+            future: getVid(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                print(videoLesson.length);
+                return Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                     color: Colors.white,
@@ -141,14 +142,14 @@ class _VideoLessonsListScreenState extends State<VideoLessonsListScreen> {
                       ],
                     )
                   ]),
-                ),
-              ),
-            );
-          } else {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-        });
+                );
+              } else {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+            }),
+      ),
+    );
   }
 }
