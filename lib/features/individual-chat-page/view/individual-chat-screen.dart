@@ -211,29 +211,32 @@ class _IndividualChatScreenState extends State<IndividualChatScreen> {
             colors: [Color(0xFF8BE1DE), Color(0xFF398FA3)],
           )),
           child: Stack(children: [
-            Container(
-                height: MediaQuery.of(context).size.height - 180,
-                child:
-                    //print(mesages);
-                    ListView.builder(
-                  reverse: true,
-                  shrinkWrap: true,
-                  itemCount: mesages.length,
-                  itemBuilder: (context, index) {
-                    return (reversedItems[index]['is_my'] == true)
-                        ? OwnMessageCard(
-                            message: reversedItems[index]['text'],
-                            time: getTime('${reversedItems[index]['date']}'),
-                          )
-                        : ReplyCard(
-                            message: reversedItems[index]['text'],
-                            time: getTime('${reversedItems[index]['date']}'));
-                  },
-                )),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 60),
+              child: Container(
+                  height: MediaQuery.of(context).size.height - 180,
+                  child:
+                      //print(mesages);
+                      ListView.builder(
+                    reverse: true,
+                    shrinkWrap: true,
+                    itemCount: mesages.length,
+                    itemBuilder: (context, index) {
+                      return (reversedItems[index]['is_my'] == true)
+                          ? OwnMessageCard(
+                              message: reversedItems[index]['text'],
+                              time: getTime('${reversedItems[index]['date']}'),
+                            )
+                          : ReplyCard(
+                              message: reversedItems[index]['text'],
+                              time: getTime('${reversedItems[index]['date']}'));
+                    },
+                  )),
+            ),
             Align(
               alignment: Alignment.bottomCenter,
               child: Padding(
-                padding: const EdgeInsets.only(bottom: 20, left: 10),
+                padding: const EdgeInsets.only(bottom: 0, left: 10),
                 child: Row(
                   children: [
                     Container(

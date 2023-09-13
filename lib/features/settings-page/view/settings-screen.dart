@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:ok_edus/features/login-page/view/login-page-screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -9,6 +11,7 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   bool isSwitched = false;
+  bool? isLogged;
 
   @override
   Widget build(BuildContext context) {
@@ -222,7 +225,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
           Padding(
             padding: const EdgeInsets.only(left: 35, right: 35),
             child: ElevatedButton(
-                onPressed: () => {},
+                onPressed: () async {
+                  SharedPreferences prefs =
+                      await SharedPreferences.getInstance();
+                  isLogged = prefs.getBool('isLogged');
+                  await prefs.setBool('isLogged', false);
+                  Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(
+                          builder: (context) => LoginPageScreen()),
+                      (route) => false);
+                },
                 child: Text('Шығу'),
                 style: ButtonStyle(
                     minimumSize:

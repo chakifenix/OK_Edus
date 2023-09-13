@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:ok_edus/features/login-page/view/login-page-screen.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -11,6 +12,7 @@ class OnboardingScreen extends StatefulWidget {
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
   bool onLastPage = false;
+  bool onFirstPage = true;
   PageController _controller = PageController();
   String selectedValue = 'Выберите';
   @override
@@ -30,6 +32,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               onPageChanged: (index) {
                 setState(() {
                   onLastPage = (index == 4);
+                  onFirstPage = (index == 0);
                 });
               },
               controller: _controller,
@@ -45,8 +48,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             child: SizedBox(
                               width: 152.84,
                               height: 152.84,
-                              child: Image.asset(
-                                  'images/elements-geometric-shape-abstract-oval-sharp-xxw.png'),
+                              child: SvgPicture.asset(
+                                  'images/Elements-geometric-shape-abstract-oval-sharp.svg'),
                             ),
                           )),
                       Positioned(
@@ -56,8 +59,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             child: SizedBox(
                               width: 152.84,
                               height: 152.84,
-                              child: Image.asset(
-                                  'images/elements-geometric-shape-flower-1-nature-5Yb.png'),
+                              child: SvgPicture.asset(
+                                  'images/Elements-geometric-shape-flower-1-nature.svg'),
                             ),
                           )),
                       Positioned(
@@ -67,8 +70,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             child: SizedBox(
                               width: 152.84,
                               height: 152.84,
-                              child: Image.asset(
-                                  'images/elements-geometric-shape-star-flower-EoH.png'),
+                              child: SvgPicture.asset(
+                                  'images/Elements-geometric-shape-star-flower.svg'),
                             ),
                           )),
                       Positioned(
@@ -141,14 +144,16 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                           ));
                                     }).toList(),
                                     onChanged: (newValue) {
-                                      setState(() {
-                                        _controller.nextPage(
-                                            duration:
-                                                Duration(milliseconds: 500),
-                                            curve: Curves.easeIn);
-                                        selectedValue = newValue!;
-                                        print(selectedValue);
-                                      });
+                                      (newValue == 'Выберите')
+                                          ? null
+                                          : setState(() {
+                                              _controller.nextPage(
+                                                  duration: Duration(
+                                                      milliseconds: 500),
+                                                  curve: Curves.easeIn);
+                                              selectedValue = newValue!;
+                                              print(selectedValue);
+                                            });
                                     },
                                   ),
                                 ),
@@ -193,7 +198,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             Container(
                 alignment: Alignment(0, 0.5),
                 child: SmoothPageIndicator(controller: _controller, count: 5)),
-            onLastPage
+            (onLastPage)
                 ? Container(
                     alignment: Alignment(0, 0.75),
                     child: ElevatedButton(
@@ -216,27 +221,29 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       )),
                     ),
                   )
-                : Container(
-                    alignment: Alignment(0, 0.75),
-                    child: ElevatedButton(
-                      child: Container(
-                          width: (280 / MediaQuery.of(context).size.width) *
-                              MediaQuery.of(context).size.width,
-                          child: Text(
-                            'Келесі',
-                            textAlign: TextAlign.center,
+                : (onFirstPage)
+                    ? Container()
+                    : Container(
+                        alignment: Alignment(0, 0.75),
+                        child: ElevatedButton(
+                          child: Container(
+                              width: (280 / MediaQuery.of(context).size.width) *
+                                  MediaQuery.of(context).size.width,
+                              child: Text(
+                                'Келесі',
+                                textAlign: TextAlign.center,
+                              )),
+                          onPressed: () {
+                            _controller.nextPage(
+                                duration: Duration(milliseconds: 500),
+                                curve: Curves.easeIn);
+                          },
+                          style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all(
+                            Color(0xFFFFC107),
                           )),
-                      onPressed: () {
-                        _controller.nextPage(
-                            duration: Duration(milliseconds: 500),
-                            curve: Curves.easeIn);
-                      },
-                      style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all(
-                        Color(0xFFFFC107),
-                      )),
-                    ),
-                  )
+                        ),
+                      )
           ],
         ),
       ),
@@ -286,8 +293,8 @@ class OnBoardPages extends StatelessWidget {
                 child: SizedBox(
                   width: 152.84,
                   height: 152.84,
-                  child: Image.asset(
-                      'images/elements-geometric-shape-abstract-oval-sharp-xxw.png'),
+                  child: SvgPicture.asset(
+                      'images/Elements-geometric-shape-abstract-oval-sharp.svg'),
                 ),
               )),
           Positioned(
@@ -297,8 +304,8 @@ class OnBoardPages extends StatelessWidget {
                 child: SizedBox(
                   width: 152.84,
                   height: 152.84,
-                  child: Image.asset(
-                      'images/elements-geometric-shape-flower-1-nature-5Yb.png'),
+                  child: SvgPicture.asset(
+                      'images/Elements-geometric-shape-flower-1-nature.svg'),
                 ),
               )),
           Positioned(
@@ -308,8 +315,8 @@ class OnBoardPages extends StatelessWidget {
                 child: SizedBox(
                   width: 152.84,
                   height: 152.84,
-                  child: Image.asset(
-                      'images/elements-geometric-shape-star-flower-EoH.png'),
+                  child: SvgPicture.asset(
+                      'images/Elements-geometric-shape-star-flower.svg'),
                 ),
               )),
           Positioned(

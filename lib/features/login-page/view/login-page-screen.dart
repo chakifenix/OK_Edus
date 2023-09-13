@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 // import 'package:http/http.dart';
 
 import 'package:ok_edus/core/api/Networking.dart';
@@ -54,8 +55,6 @@ class _LoginPageScreenState extends State<LoginPageScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double baseWidth = 390;
-    double fem = MediaQuery.of(context).size.width / baseWidth;
     final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
     return Container(
       decoration: BoxDecoration(
@@ -74,32 +73,32 @@ class _LoginPageScreenState extends State<LoginPageScreen> {
                 top: 141.39,
                 child: Align(
                   child: SizedBox(
-                    width: 152.84 * fem,
-                    height: 152.84 * fem,
-                    child: Image.asset(
-                        'images/elements-geometric-shape-abstract-oval-sharp-xxw.png'),
+                    width: 152.84,
+                    height: 152.84,
+                    child: SvgPicture.asset(
+                        'images/Elements-geometric-shape-abstract-oval-sharp.svg'),
                   ),
                 )),
             Positioned(
-                left: 107.9046173096 * fem,
+                left: 107.9046173096,
                 top: -40,
                 child: Align(
                   child: SizedBox(
-                    width: 152.84 * fem,
-                    height: 152.84 * fem,
-                    child: Image.asset(
-                        'images/elements-geometric-shape-flower-1-nature-5Yb.png'),
+                    width: 152.84,
+                    height: 152.84,
+                    child: SvgPicture.asset(
+                        'images/Elements-geometric-shape-flower-1-nature.svg'),
                   ),
                 )),
             Positioned(
-                left: 236.6908454895 * fem,
-                top: 313.9845504761 * fem,
+                left: 236.6908454895,
+                top: 313.9845504761,
                 child: Align(
                   child: SizedBox(
-                    width: 152.84 * fem,
-                    height: 152.84 * fem,
-                    child: Image.asset(
-                        'images/elements-geometric-shape-star-flower-EoH.png'),
+                    width: 152.84,
+                    height: 152.84,
+                    child: SvgPicture.asset(
+                        'images/Elements-geometric-shape-star-flower.svg'),
                   ),
                 )),
             Positioned(

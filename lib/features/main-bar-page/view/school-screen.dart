@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:ok_edus/features/birlestik-page/view/birlestik-screen.dart';
 import 'package:ok_edus/features/edu-resources-page/view/edu-resources-screen.dart';
 import 'package:ok_edus/features/homework-page/view/homework-main-screen.dart';
@@ -134,8 +135,14 @@ class _SchoolScreenState extends State<SchoolScreen> {
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(10)),
                                 height: 65,
-                                //width: 65,
-                                child: Image.asset('images/frame-7-Gm5.png'),
+                                width: 65,
+                                child: Center(
+                                  child: SvgPicture.asset(
+                                    'images/Vector1.svg',
+                                    width: 35,
+                                    height: 35,
+                                  ),
+                                ),
                               ),
                             ),
                             const Text(
@@ -161,11 +168,17 @@ class _SchoolScreenState extends State<SchoolScreen> {
                               },
                               child: Container(
                                 height: 65,
-                                //width: 65,
+                                width: 65,
                                 decoration: BoxDecoration(
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(10)),
-                                child: Image.asset('images/frame-7-jgT.png'),
+                                child: Center(
+                                  child: SvgPicture.asset(
+                                    'images/Vector2.svg',
+                                    width: 40,
+                                    height: 40,
+                                  ),
+                                ),
                               ),
                             ),
                             Text(
@@ -194,9 +207,10 @@ class _SchoolScreenState extends State<SchoolScreen> {
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(10)),
                                 height: 65,
-                                //width: 65,
-
-                                child: Image.asset('images/Subjects.png'),
+                                width: 65,
+                                child: Center(
+                                    child:
+                                        SvgPicture.asset('images/Vector3.svg')),
                               ),
                             ),
                             Text(
@@ -226,7 +240,9 @@ class _SchoolScreenState extends State<SchoolScreen> {
                                 decoration: BoxDecoration(
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(10)),
-                                child: Image.asset('images/Homeworks.png'),
+                                child: Center(
+                                    child:
+                                        SvgPicture.asset('images/Vector4.svg')),
                               ),
                               Text(
                                 'Үй жұмысы',
@@ -264,7 +280,9 @@ class _SchoolScreenState extends State<SchoolScreen> {
                                 decoration: BoxDecoration(
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(10)),
-                                child: Image.asset('images/List.png'),
+                                child: Center(
+                                    child:
+                                        SvgPicture.asset('images/Vector5.svg')),
                               ),
                               Text(
                                 'Бірлестік',
@@ -297,7 +315,9 @@ class _SchoolScreenState extends State<SchoolScreen> {
                                 decoration: BoxDecoration(
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(10)),
-                                child: Image.asset('images/Materials.png'),
+                                child: Center(
+                                    child:
+                                        SvgPicture.asset('images/Vector6.svg')),
                               ),
                               Container(
                                 width: 65,
@@ -326,7 +346,9 @@ class _SchoolScreenState extends State<SchoolScreen> {
                               decoration: BoxDecoration(
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(10)),
-                              child: Image.asset('images/gg_info.png'),
+                              child: Center(
+                                  child:
+                                      SvgPicture.asset('images/Vector7.svg')),
                             ),
                             Text(
                               'Инфо',
@@ -368,8 +390,12 @@ class _SchoolScreenState extends State<SchoolScreen> {
                               decoration: BoxDecoration(
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(10)),
-                              child: Image.asset(
-                                'images/approval1.png',
+                              child: Center(
+                                child: SvgPicture.asset(
+                                  'images/Test.svg',
+                                  width: 40,
+                                  height: 40,
+                                ),
                               ),
                             ),
                             Text(
@@ -399,7 +425,13 @@ class _SchoolScreenState extends State<SchoolScreen> {
                                 decoration: BoxDecoration(
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(10)),
-                                child: Image.asset('images/approval2.png'),
+                                child: Center(
+                                  child: SvgPicture.asset(
+                                    'images/Videolesson.svg',
+                                    width: 40,
+                                    height: 40,
+                                  ),
+                                ),
                               ),
                             ),
                             Text(
@@ -421,7 +453,13 @@ class _SchoolScreenState extends State<SchoolScreen> {
                               decoration: BoxDecoration(
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(10)),
-                              child: Image.asset('images/approval3.png'),
+                              child: Center(
+                                child: SvgPicture.asset(
+                                  'images/Quiz.svg',
+                                  width: 50,
+                                  height: 50,
+                                ),
+                              ),
                             ),
                             Text(
                               'Quiz',
@@ -442,7 +480,8 @@ class _SchoolScreenState extends State<SchoolScreen> {
                               decoration: BoxDecoration(
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(10)),
-                              child: Image.asset('images/approval4.png'),
+                              child: Center(
+                                  child: SvgPicture.asset('images/zhazba.svg')),
                             ),
                             Text(
                               'Жазба',

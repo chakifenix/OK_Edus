@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:circular_bottom_navigation/tab_item.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:dio/dio.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:circular_bottom_navigation/circular_bottom_navigation.dart';
 import 'package:intl/intl.dart';
@@ -245,10 +246,10 @@ class _MainScreenState extends State<MainScreen> {
                           // color: Colors.white,
                           height: 44,
                           alignment: Alignment.centerLeft,
-                          child: const Padding(
+                          child: Padding(
                             padding: EdgeInsets.all(8.0),
                             child: Text(
-                              'Қазіргі сабақ',
+                              'subject_now',
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 color: Color(0xFF1E1E1E),
@@ -256,7 +257,7 @@ class _MainScreenState extends State<MainScreen> {
                                 fontFamily: 'SF Pro Display',
                                 fontWeight: FontWeight.w400,
                               ),
-                            ),
+                            ).tr(),
                           ),
                         ),
                       ),
@@ -495,6 +496,17 @@ class _MainScreenState extends State<MainScreen> {
                               MediaQuery.of(context).size.width / 2.6 / 1.15,
                           alignment: Alignment.centerLeft,
                           child: HomeWork()),
+                      ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              if (context.locale.languageCode == 'en') {
+                                context.setLocale(Locale('ru'));
+                              } else {
+                                context.setLocale(Locale('en'));
+                              }
+                            });
+                          },
+                          child: Text('Press'))
                     ]),
               ],
             ),

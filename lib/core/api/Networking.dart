@@ -128,8 +128,7 @@ class SubjectsService {
         options: Options(headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
-          'Authorization':
-              'Bearer 2433|IYItSYMJzOVdZJ1ZxZnTsl6dgD0rtB3ycYYUvkF6',
+          'Authorization': 'Bearer $token',
         }),
       );
       print(response);
@@ -198,7 +197,7 @@ class SubjectsService {
   static Future<void> storeToken(String token) async {
     await storage.write(
       key: 'token',
-      value: '2557|f1t7rDKbCtJzfXrm89Y9tj5KFwbyHRMTAl4MNhVx',
+      value: '$token',
     );
   }
 
