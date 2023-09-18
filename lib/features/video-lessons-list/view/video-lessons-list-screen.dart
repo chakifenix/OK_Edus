@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:ok_edus/core/api/Networking.dart';
 import 'package:ok_edus/features/video-lesson-page/view/video-lesson-screen.dart';
-import 'package:ok_edus/model/video-model.dart';
+import 'package:ok_edus/model/video_model.dart';
+
+import '../../../gradiend.dart';
 
 class VideoLessonsListScreen extends StatefulWidget {
   @override
@@ -12,11 +14,18 @@ class VideoLessonsListScreen extends StatefulWidget {
 
 class _VideoLessonsListScreenState extends State<VideoLessonsListScreen> {
   List<VidModel> videoLesson = [];
+  int classN = 0;
+  void getClass() async {
+    var str = await SubjectsService.getClass();
+    classN = int.parse(str!);
+    setState(() {});
+  }
 
   Future<List<VidModel>> getVid() async {
     var scopedToken = await SubjectsService.getToken();
-    final response =
-        await SubjectsService.fetchSubjects('/video-lessons', '$scopedToken');
+    String lang = await SubjectsService.getLang();
+    final response = await SubjectsService.fetchSubjects(
+        '${lang}/video-lessons', '$scopedToken');
     var data = jsonDecode(response.toString());
 
     if (response.statusCode == 200) {
@@ -30,16 +39,22 @@ class _VideoLessonsListScreenState extends State<VideoLessonsListScreen> {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getClass();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height,
-      decoration: BoxDecoration(
-          gradient: LinearGradient(
-        begin: Alignment(0.74, -0.67),
-        end: Alignment(-0.74, 0.67),
-        colors: [Color(0xFF8BE1DE), Color(0xFF398FA3)],
-      )),
+      decoration: (classN >= 5 && classN <= 9)
+          ? MyTheme.teenColor()
+          : (classN >= 1 && classN <= 4)
+              ? MyTheme.kidsColor()
+              : MyTheme.adultColor(),
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: AppBar(
@@ -71,7 +86,7 @@ class _VideoLessonsListScreenState extends State<VideoLessonsListScreen> {
                     Padding(
                       padding: const EdgeInsets.only(left: 14, top: 10),
                       child: Text(
-                        'Видеолар',
+                        'Видео',
                         style: TextStyle(
                           color: Color(0xFF1E1E1E),
                           fontSize: 16,
