@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:ok_edus/core/api/Networking.dart';
 import 'package:ok_edus/features/individual-chat-page/view/individual-chat-screen.dart';
@@ -21,8 +22,9 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Future<List<GetChatModel>> getChats() async {
     var scopedToken = await SubjectsService.getToken();
+    String lang = await SubjectsService.getLang();
     final response = await SubjectsService.fetchSubjects(
-        '/messenger/get-chats', '$scopedToken');
+        '${lang}/messenger/get-chats', '$scopedToken');
     var data = jsonDecode(response.toString());
 
     if (response.statusCode == 200) {
@@ -70,9 +72,6 @@ class _ChatScreenState extends State<ChatScreen> {
     return Scaffold(
         backgroundColor: Colors.transparent,
         appBar: AppBar(
-          leading: BackButton(
-            color: Colors.blue,
-          ),
           backgroundColor: Colors.white,
           title: Text(
             'Мессенджер',
@@ -98,7 +97,7 @@ class _ChatScreenState extends State<ChatScreen> {
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
                               borderSide: BorderSide.none),
-                          hintText: 'Іздеу',
+                          hintText: 'search'.tr(),
                           prefixIcon: Icon(Icons.search),
                           prefixIconColor: Colors.grey),
                     ),

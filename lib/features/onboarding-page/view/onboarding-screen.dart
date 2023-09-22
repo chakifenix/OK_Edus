@@ -1,6 +1,9 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:ok_edus/features/login-page/view/login-page-screen.dart';
+import 'package:ok_edus/gradiend.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -15,15 +18,23 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   bool onFirstPage = true;
   PageController _controller = PageController();
   String selectedValue = 'Выберите';
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    langState();
+  }
+
+  void langState() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    await preferences.setString('myLang', 'ru');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-          gradient: LinearGradient(
-        begin: Alignment(0.74, -0.67),
-        end: Alignment(-0.74, 0.67),
-        colors: [Color(0xFF8BE1DE), Color(0xFF398FA3)],
-      )),
+      decoration: MyTheme.teenColor(),
       child: Scaffold(
         backgroundColor: Colors.transparent,
         body: Stack(
@@ -143,17 +154,36 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                 : null,
                                           ));
                                     }).toList(),
-                                    onChanged: (newValue) {
+                                    onChanged: (newValue) async {
+                                      SharedPreferences preferences =
+                                          await SharedPreferences.getInstance();
                                       (newValue == 'Выберите')
                                           ? null
-                                          : setState(() {
-                                              _controller.nextPage(
-                                                  duration: Duration(
-                                                      milliseconds: 500),
-                                                  curve: Curves.easeIn);
-                                              selectedValue = newValue!;
-                                              print(selectedValue);
-                                            });
+                                          : (newValue == 'Қазақша')
+                                              ? setState(() async {
+                                                  await preferences.setString(
+                                                      'myLang', 'kk');
+                                                  _controller.nextPage(
+                                                      duration: Duration(
+                                                          milliseconds: 500),
+                                                      curve: Curves.easeIn);
+                                                  selectedValue = newValue!;
+                                                  print(selectedValue);
+                                                  context
+                                                      .setLocale(Locale('en'));
+                                                })
+                                              : setState(() async {
+                                                  await preferences.setString(
+                                                      'myLang', 'ru');
+                                                  _controller.nextPage(
+                                                      duration: Duration(
+                                                          milliseconds: 500),
+                                                      curve: Curves.easeIn);
+                                                  selectedValue = newValue!;
+                                                  print(selectedValue);
+                                                  context
+                                                      .setLocale(Locale('ru'));
+                                                });
                                     },
                                   ),
                                 ),
@@ -167,30 +197,26 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 ),
                 OnBoardPages(
                   imageName: 'images/man.png',
-                  title: 'Қашықтан оқу',
-                  subTitle:
-                      'Мектеп сабақтарының кестелері мен қашықтан оқудың жүйесін қолданыңыз',
+                  title: 'onboard1-title',
+                  subTitle: 'onboard1-subtitle',
                   controller: _controller,
                 ),
                 OnBoardPages(
                   imageName: 'images/man2.png',
-                  title: 'Сабақ материалдары',
-                  subTitle:
-                      'Күнделікті сабақтардың мазмұны мен тапсырмаларын біліп, танысып отырыңыз',
+                  title: 'onboard2-title',
+                  subTitle: 'onboard2-subtitle',
                   controller: _controller,
                 ),
                 OnBoardPages(
                   imageName: 'images/man3.png',
-                  title: 'Үй тапсырмалары',
-                  subTitle:
-                      'Үй тапсырмаларын орындаңыз және осы қосымша арқылы мұғалімдерге жолдаңыз',
+                  title: 'onboard3-title',
+                  subTitle: 'onboard3-subtitle',
                   controller: _controller,
                 ),
                 OnBoardPages(
                   imageName: 'images/man4.png',
-                  title: 'Стриминг-сабақтар',
-                  subTitle:
-                      'Видео сабақтарға қатысыңы, мұғалімдердің қашықтан оқытуын онлайн тыңдаңыз',
+                  title: 'onboard4-title',
+                  subTitle: 'onboard4-subtitle',
                   controller: _controller,
                 ),
               ],
@@ -206,14 +232,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           width: (280 / MediaQuery.of(context).size.width) *
                               MediaQuery.of(context).size.width,
                           child: Text(
-                            'Келесі',
+                            'next'.tr(),
                             textAlign: TextAlign.center,
                           )),
                       onPressed: () {
-                        Navigator.push(
-                            context,
+                        Navigator.of(context).pushAndRemoveUntil(
                             MaterialPageRoute(
-                                builder: (context) => LoginPageScreen()));
+                                builder: (context) => LoginPageScreen()),
+                            (route) => false);
                       },
                       style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.all(
@@ -230,9 +256,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                               width: (280 / MediaQuery.of(context).size.width) *
                                   MediaQuery.of(context).size.width,
                               child: Text(
-                                'Келесі',
+                                'next',
                                 textAlign: TextAlign.center,
-                              )),
+                              ).tr()),
                           onPressed: () {
                             _controller.nextPage(
                                 duration: Duration(milliseconds: 500),
@@ -259,9 +285,9 @@ class OnBoardPages extends StatelessWidget {
     required this.subTitle,
     required PageController controller,
   }) : _controller = controller;
-  String imageName;
-  String title;
-  String subTitle;
+  final String imageName;
+  final String title;
+  final String subTitle;
   final PageController _controller;
 
   @override
@@ -272,13 +298,13 @@ class OnBoardPages extends StatelessWidget {
         children: [
           Positioned(
               top: 80,
-              right: 44,
+              right: 30,
               child: GestureDetector(
                   onTap: () {
                     _controller.jumpToPage(3);
                   },
                   child: Text(
-                    'Өткізу',
+                    'skip'.tr(),
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 16,
@@ -340,7 +366,7 @@ class OnBoardPages extends StatelessWidget {
                     fontFamily: 'SF Pro Display',
                     fontWeight: FontWeight.w700,
                   ),
-                ),
+                ).tr(),
                 SizedBox(
                   height: 15,
                 ),
@@ -357,7 +383,7 @@ class OnBoardPages extends StatelessWidget {
                         fontWeight: FontWeight.w400,
                       ),
                       textAlign: TextAlign.center,
-                    ),
+                    ).tr(),
                   ),
                 )
               ],

@@ -2,11 +2,14 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:ok_edus/core/api/Networking.dart';
 import 'package:ok_edus/model/home-work-model.dart';
+
+import '../../../gradiend.dart';
 
 class HomeWorkSendScreen extends StatefulWidget {
   String idM;
@@ -25,6 +28,13 @@ class _HomeWorkSendScreenState extends State<HomeWorkSendScreen> {
   File? image;
   String? imageName;
   String textController = '';
+  int classN = 0;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getClass();
+  }
 
   void pickImage() async {
     try {
@@ -59,8 +69,9 @@ class _HomeWorkSendScreenState extends State<HomeWorkSendScreen> {
 
   Future<List<dynamic>> getHomeWorkPage() async {
     var scopedToken = await SubjectsService.getToken();
+    String lang = await SubjectsService.getLang();
     final response = await SubjectsService.fetchSubjects(
-        '/distance-material/${id}', '$scopedToken');
+        '${lang}/distance-material/${id}', '$scopedToken');
     var data = jsonDecode(response.toString());
     if (response.statusCode == 200) {
       if (data.containsKey('headers')) {
@@ -76,30 +87,35 @@ class _HomeWorkSendScreenState extends State<HomeWorkSendScreen> {
     }
   }
 
+  void getClass() async {
+    var str = await SubjectsService.getClass();
+    classN = int.parse(str!);
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: _onTapOutsideTextField,
       child: Container(
-        decoration: BoxDecoration(
-            gradient: LinearGradient(
-          begin: Alignment(0.74, -0.67),
-          end: Alignment(-0.74, 0.67),
-          colors: [Color(0xFF8BE1DE), Color(0xFF398FA3)],
-        )),
+        decoration: (classN >= 5 && classN <= 9)
+            ? MyTheme.teenColor()
+            : (classN >= 1 && classN <= 4)
+                ? MyTheme.kidsColor()
+                : MyTheme.adultColor(),
         child: Scaffold(
           backgroundColor: Colors.transparent,
           appBar: AppBar(
             leading: BackButton(color: Colors.black),
             title: Text(
-              'Үй жұмысы',
+              'homework',
               style: TextStyle(
                 color: Color(0xFF424242),
                 fontSize: 20,
                 fontFamily: 'SF Pro Display',
                 fontWeight: FontWeight.w500,
               ),
-            ),
+            ).tr(),
             backgroundColor: Colors.white,
             elevation: 0,
           ),
@@ -217,8 +233,8 @@ class _HomeWorkSendScreenState extends State<HomeWorkSendScreen> {
                                               height: 6,
                                             ),
                                             Text(
-                                              'Үй жұмысы:',
-                                            ),
+                                              'homework',
+                                            ).tr(),
                                             Text(
                                               '${work[0].title}',
                                               textAlign: TextAlign.left,
@@ -226,12 +242,12 @@ class _HomeWorkSendScreenState extends State<HomeWorkSendScreen> {
                                             SizedBox(
                                               height: 17,
                                             ),
-                                            Text('Мұғалім:'),
+                                            Text('teacher').tr(),
                                             Text('${work[0].teacherFio}'),
                                             SizedBox(
                                               height: 17,
                                             ),
-                                            Text('data'),
+                                            Text('text').tr(),
                                             SizedBox(
                                               height: 8,
                                             ),
@@ -303,7 +319,7 @@ class _HomeWorkSendScreenState extends State<HomeWorkSendScreen> {
                                                 pickImage();
                                                 print('pressed');
                                               },
-                                              child: Text('Файлды жүктеу'),
+                                              child: Text('import').tr(),
                                               style: ButtonStyle(
                                                   elevation:
                                                       MaterialStateProperty.all(
@@ -322,7 +338,7 @@ class _HomeWorkSendScreenState extends State<HomeWorkSendScreen> {
                                             Center(
                                                 child: ElevatedButton(
                                                     onPressed: () => {},
-                                                    child: Text('data'),
+                                                    child: Text('done').tr(),
                                                     style: (textController ==
                                                                 '' ||
                                                             imageName == null)

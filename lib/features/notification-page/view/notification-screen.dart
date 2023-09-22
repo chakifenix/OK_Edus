@@ -1,4 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:ok_edus/gradiend.dart';
 import 'package:ok_edus/model/notification-model.dart';
 
 import '../../main-bar-page/view/chat-screen.dart';
@@ -18,15 +20,10 @@ class _NotificationScreenState extends State<NotificationScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-          gradient: LinearGradient(
-        begin: Alignment(0.74, -0.67),
-        end: Alignment(-0.74, 0.67),
-        colors: [Color(0xFF8BE1DE), Color(0xFF398FA3)],
-      )),
+      decoration: MyTheme.teenColor(),
       child: Scaffold(
           backgroundColor: Colors.transparent,
-          appBar: AppBar(title: Text('Notification')),
+          appBar: AppBar(title: Text('notification').tr()),
           body: ListView.builder(
               itemCount: notificationList.length,
               itemBuilder: (context, index) {

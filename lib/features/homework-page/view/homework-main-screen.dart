@@ -1,20 +1,31 @@
 import 'dart:convert';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:ok_edus/core/api/Networking.dart';
 import 'package:ok_edus/features/homework-send-page/view/homework-send-screen.dart';
 import 'package:ok_edus/model/home-work-main-model.dart';
 
-class HomeWorkMainScreen extends StatelessWidget {
+import '../../../gradiend.dart';
+
+class HomeWorkMainScreen extends StatefulWidget {
   HomeWorkMainScreen({super.key});
+
+  @override
+  State<HomeWorkMainScreen> createState() => _HomeWorkMainScreenState();
+}
+
+class _HomeWorkMainScreenState extends State<HomeWorkMainScreen> {
+  int classN = 0;
 
   List<HomeWorkModel> homeWorkModel = [];
 
   Future<List<HomeWorkModel>> getHomeWork() async {
     var scopedToken = await SubjectsService.getToken();
+    String lang = await SubjectsService.getLang();
     final response = await SubjectsService.fetchSubjects(
-        '/distance-schedule', '$scopedToken');
+        '${lang}/distance-schedule', '$scopedToken');
     var data = jsonDecode(response.toString());
 
     if (response.statusCode == 200) {
@@ -27,6 +38,12 @@ class HomeWorkMainScreen extends StatelessWidget {
     }
   }
 
+  void getClass() async {
+    var str = await SubjectsService.getClass();
+    classN = int.parse(str!);
+    setState(() {});
+  }
+
   String convertDateFormat(
       String originalFormat, String targetFormat, String dateStr) {
     DateTime originalDate = DateFormat(originalFormat).parse(dateStr);
@@ -35,14 +52,20 @@ class HomeWorkMainScreen extends StatelessWidget {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getClass();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-          gradient: LinearGradient(
-        begin: Alignment(0.74, -0.67),
-        end: Alignment(-0.74, 0.67),
-        colors: [Color(0xFF8BE1DE), Color(0xFF398FA3)],
-      )),
+      decoration: (classN >= 5 && classN <= 9)
+          ? MyTheme.teenColor()
+          : (classN >= 1 && classN <= 4)
+              ? MyTheme.kidsColor()
+              : MyTheme.adultColor(),
       child: Scaffold(
           backgroundColor: Colors.transparent,
           appBar: AppBar(
@@ -51,14 +74,14 @@ class HomeWorkMainScreen extends StatelessWidget {
             ),
             elevation: 0,
             title: Text(
-              'Үй жұмысы',
+              'homework',
               style: TextStyle(
                 color: Color(0xFF424242),
                 fontSize: 20,
                 fontFamily: 'SF Pro Display',
                 fontWeight: FontWeight.w500,
               ),
-            ),
+            ).tr(),
             backgroundColor: Colors.white,
           ),
           body: FutureBuilder(

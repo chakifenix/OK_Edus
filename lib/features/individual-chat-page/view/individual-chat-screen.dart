@@ -10,6 +10,8 @@ import 'package:ok_edus/model/chat-history-model.dart';
 import 'package:ok_edus/model/get-chat-model.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
+import '../../../gradiend.dart';
+
 class IndividualChatScreen extends StatefulWidget {
   IndividualChatScreen({super.key, required this.chatModel});
   final GetChatModel chatModel;
@@ -34,6 +36,12 @@ class _IndividualChatScreenState extends State<IndividualChatScreen> {
   final channel = WebSocketChannel.connect(
       Uri.parse('ws://mobile.mektep.edu.kz:6001/app/*%)35ke9Uw86*kWr'));
   final ScrollController _scrollController = ScrollController();
+  int classN = 0;
+  void getClass() async {
+    var str = await SubjectsService.getClass();
+    classN = int.parse(str!);
+    setState(() {});
+  }
 
   @override
   void initState() {
@@ -41,6 +49,7 @@ class _IndividualChatScreenState extends State<IndividualChatScreen> {
     super.initState();
     startProcess();
     loadHistoryChat();
+    getClass();
   }
 
   Future<void> startProcess() async {
@@ -204,12 +213,11 @@ class _IndividualChatScreenState extends State<IndividualChatScreen> {
       body: Container(
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
-          decoration: BoxDecoration(
-              gradient: LinearGradient(
-            begin: Alignment(0.74, -0.67),
-            end: Alignment(-0.74, 0.67),
-            colors: [Color(0xFF8BE1DE), Color(0xFF398FA3)],
-          )),
+          decoration: (classN >= 5 && classN <= 9)
+              ? MyTheme.teenColor()
+              : (classN >= 1 && classN <= 4)
+                  ? MyTheme.kidsColor()
+                  : MyTheme.adultColor(),
           child: Stack(children: [
             Padding(
               padding: const EdgeInsets.only(bottom: 60),

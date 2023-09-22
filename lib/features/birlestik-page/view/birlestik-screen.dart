@@ -1,8 +1,11 @@
 import 'dart:convert';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:ok_edus/core/api/Networking.dart';
 import 'package:ok_edus/model/classmates-model.dart';
 import 'package:ok_edus/model/teacher-model.dart';
+
+import '../../../gradiend.dart';
 
 class BirlestikScreen extends StatefulWidget {
   const BirlestikScreen({super.key});
@@ -12,9 +15,17 @@ class BirlestikScreen extends StatefulWidget {
 }
 
 class _BirlestikScreenState extends State<BirlestikScreen> {
+  int classN = 0;
   @override
   void initState() {
     super.initState();
+    getClass();
+  }
+
+  void getClass() async {
+    var str = await SubjectsService.getClass();
+    classN = int.parse(str!);
+    setState(() {});
   }
 
   @override
@@ -41,12 +52,11 @@ class _BirlestikScreenState extends State<BirlestikScreen> {
           body: Container(
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height,
-              decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                begin: Alignment(0.74, -0.67),
-                end: Alignment(-0.74, 0.67),
-                colors: [Color(0xFF8BE1DE), Color(0xFF398FA3)],
-              )),
+              decoration: (classN >= 5 && classN <= 9)
+                  ? MyTheme.teenColor()
+                  : (classN >= 1 && classN <= 4)
+                      ? MyTheme.kidsColor()
+                      : MyTheme.adultColor(),
               child: Padding(
                 padding: const EdgeInsets.only(top: 27),
                 child: Column(
@@ -65,14 +75,39 @@ class _BirlestikScreenState extends State<BirlestikScreen> {
                         ),
                         unselectedLabelColor: Color(0xFF71727A),
                         indicator: BoxDecoration(
-                            color: Colors.blue,
+                            gradient: ((classN >= 5 && classN <= 9)
+                                ? LinearGradient(
+                                    begin: Alignment(0.74, -0.67),
+                                    end: Alignment(-0.74, 0.67),
+                                    colors: [
+                                      Color(0xFF60B0F5),
+                                      Color(0xFF1572C3)
+                                    ],
+                                  )
+                                : (classN >= 1 && classN <= 4)
+                                    ? LinearGradient(
+                                        begin: Alignment(0.74, -0.67),
+                                        end: Alignment(-0.74, 0.67),
+                                        colors: [
+                                          Color(0xFFFFC107),
+                                          Color(0xFFFFC107)
+                                        ],
+                                      )
+                                    : LinearGradient(
+                                        begin: Alignment(0.74, -0.67),
+                                        end: Alignment(-0.74, 0.67),
+                                        colors: [
+                                          Color(0xFFFFC107),
+                                          Color(0xFFFFC107)
+                                        ],
+                                      )),
                             borderRadius: BorderRadius.circular(16)),
                         tabs: [
                           Tab(
-                            text: 'Сынып',
+                            text: 'class'.tr(),
                           ),
                           Tab(
-                            text: 'Мұғалімдер',
+                            text: 'teachers'.tr(),
                           ),
                         ],
                       ),
@@ -97,8 +132,9 @@ class Class extends StatelessWidget {
 
   Future<List<Classmates>> getClassmates() async {
     var scopedToken = await SubjectsService.getToken();
-    final response =
-        await SubjectsService.fetchSubjects('/classmates-list', '$scopedToken');
+    String lang = await SubjectsService.getLang();
+    final response = await SubjectsService.fetchSubjects(
+        '${lang}/classmates-list', '$scopedToken');
     var data = jsonDecode(response.toString());
 
     if (response.statusCode == 200) {
@@ -171,8 +207,9 @@ class TeacherList extends StatelessWidget {
 
   Future<List<TeacherModel>> getTeacherList() async {
     var scopedToken = await SubjectsService.getToken();
-    final response =
-        await SubjectsService.fetchSubjects('/teachers-list', '$scopedToken');
+    String lang = await SubjectsService.getLang();
+    final response = await SubjectsService.fetchSubjects(
+        '${lang}/teachers-list', '$scopedToken');
     var data = jsonDecode(response.toString());
 
     if (response.statusCode == 200) {
@@ -215,14 +252,30 @@ class TeacherList extends StatelessWidget {
                                       width: 20,
                                     ),
                                     Expanded(
-                                      child: Text(
-                                        '${teacherList[index].surname} ${teacherList[index].name}',
-                                        style: TextStyle(
-                                          color: Color(0xFF1F2024),
-                                          fontSize: 14,
-                                          fontFamily: 'Inter',
-                                          fontWeight: FontWeight.w500,
-                                        ),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            '${teacherList[index].surname} ${teacherList[index].name}',
+                                            style: TextStyle(
+                                              color: Color(0xFF1F2024),
+                                              fontSize: 14,
+                                              fontFamily: 'Inter',
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                          Text(
+                                            '${teacherList[index].predmetName}',
+                                            style: TextStyle(
+                                              color: Color(0xFF1F2024),
+                                              fontSize: 12,
+                                              fontFamily: 'Inter',
+                                              fontWeight: FontWeight.w400,
+                                              height: 0,
+                                            ),
+                                          )
+                                        ],
                                       ),
                                     ),
                                   ],

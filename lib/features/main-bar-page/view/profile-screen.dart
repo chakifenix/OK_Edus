@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:ok_edus/core/api/call.dart';
 import 'package:ok_edus/core/api/Networking.dart';
@@ -18,8 +19,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Future<List<ProfileModel>> getProfile() async {
     var scopedToken = await SubjectsService.getToken();
+    String lang = await SubjectsService.getLang();
     final response =
-        await SubjectsService.fetchSubjects('/profile', '$scopedToken');
+        await SubjectsService.fetchSubjects('${lang}/profile', '$scopedToken');
     var data = jsonDecode(response.toString());
 
     if (response.statusCode == 200) {
@@ -34,6 +36,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Colors.transparent,
         appBar: AppBar(
           actions: [
             IconButton(
@@ -44,8 +47,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
               onPressed: () {
                 // Действия при нажатии на кнопку
 
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => SettingsScreen()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => SettingsScreen())).then((value) {
+                  if (value != null) {
+                    setState(() {});
+                  }
+                });
               },
             ),
           ],
@@ -64,12 +73,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         body: Container(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
-          decoration: BoxDecoration(
-              gradient: LinearGradient(
-            begin: Alignment(0.74, -0.67),
-            end: Alignment(-0.74, 0.67),
-            colors: [Color(0xFF8BE1DE), Color(0xFF398FA3)],
-          )),
           child: FutureBuilder(
               future: getProfile(),
               builder: (context, snapshot) {
@@ -113,7 +116,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         height: 16,
                       ),
                       Text(
-                        '${profileModel[0].profileModelClass} сынып оқушысы',
+                        '${profileModel[0].profileModelClass} ${'class-students'.tr()}',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: Colors.white,
@@ -125,27 +128,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       SizedBox(
                         height: 30,
                       ),
-                      StudentCard('Толық аты-жөні',
+                      StudentCard('fio'.tr(),
                           '${profileModel[0].surname} ${profileModel[0].name} ${profileModel[0].lastname}'),
                       SizedBox(
                         height: 7,
                       ),
-                      StudentCard(
-                          'Сыныбы', '${profileModel[0].profileModelClass}'),
+                      StudentCard('sinibi'.tr(),
+                          '${profileModel[0].profileModelClass}'),
                       SizedBox(
                         height: 7,
                       ),
-                      StudentCard(
-                          'Сынып жетекші', '${profileModel[0].teacherFio}'),
+                      StudentCard('sinip-zhetekwisi'.tr(),
+                          '${profileModel[0].teacherFio}'),
                       SizedBox(
                         height: 7,
                       ),
-                      StudentCard('Ата-ана 1',
+                      StudentCard('${'ata-ana'.tr()} 1',
                           '${profileModel[0].parent1.surname} ${profileModel[0].parent1.name} ${profileModel[0].parent1.lastname}'),
                       SizedBox(
                         height: 7,
                       ),
-                      StudentCard('Ата-ана 2',
+                      StudentCard('${'ata-ana'.tr()} 2',
                           '${profileModel[0].parent2.surname} ${profileModel[0].parent2.name} ${profileModel[0].parent2.lastname}'),
                       SizedBox(
                         height: 7,

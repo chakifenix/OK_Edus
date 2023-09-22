@@ -1,9 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SubjectsService {
   static final String _baseUrl =
-      'https://mobile.mektep.edu.kz/api_ok_edus/public/api/ru';
+      'https://mobile.mektep.edu.kz/api_ok_edus/public/api/';
   static final storage = FlutterSecureStorage();
 
   static Future<Response<dynamic>> fetchSubjects(
@@ -32,7 +33,8 @@ class SubjectsService {
   static Future<Response<dynamic>> fetchSubjectsPost(
       String id_predmet, String chetvert, String month) async {
     Dio dio = Dio();
-    final path = '/jurnal-grades'; // Путь к эндпоинту API
+    String lang = await getLang();
+    final path = '${lang}/jurnal-grades'; // Путь к эндпоинту API
 
     final url = '$_baseUrl$path';
     final data = {
@@ -40,6 +42,29 @@ class SubjectsService {
       'chetvert': chetvert,
       'month': month
     };
+
+    Response response;
+
+    response = await dio.post(
+      url,
+      data: data,
+      options: Options(headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer 1483|TyLoBW6gE53TmeuFn2yebIUgGeDcWf88cFiXrBXN',
+      }),
+    );
+    return response;
+  }
+
+  static Future<Response<dynamic>> fetchPasswordChangePost(
+      String oldPassword, String newPassword) async {
+    Dio dio = Dio();
+    String lang = await getLang();
+    final path = '${lang}/change-password'; // Путь к эндпоинту API
+
+    final url = '$_baseUrl$path';
+    final data = {'cur_password': oldPassword, 'new_password': newPassword};
 
     Response response;
 
@@ -90,7 +115,7 @@ class SubjectsService {
   static Future<Response<dynamic>> fetchChatPost(
       String socketId, String channelId, String token) async {
     Dio dio = Dio();
-    final path = '/jurnal-grades'; // Путь к эндпоинту API
+    // Путь к эндпоинту API
 
     final url =
         'https://mobile.mektep.edu.kz/api_ok_edus/public/broadcasting/auth';
@@ -194,15 +219,41 @@ class SubjectsService {
     }
   }
 
-  static Future<void> storeToken(String token) async {
+  static Future<void> storegeInfo(
+      String token, String refreshToken, int classN, String name) async {
     await storage.write(
       key: 'token',
       value: '$token',
     );
+    await storage.write(
+      key: 'refreshToken',
+      value: '$refreshToken',
+    );
+    await storage.write(
+      key: 'classN',
+      value: '$classN',
+    );
+    await storage.write(
+      key: 'studentName',
+      value: '$name',
+    );
+  }
+
+  static Future<String?> getClass() async {
+    return await storage.read(key: 'classN');
   }
 
   static Future<String?> getToken() async {
     return await storage.read(key: 'token');
+  }
+
+  static Future<String?> getName() async {
+    return await storage.read(key: 'studentName');
+  }
+
+  static Future<String> getLang() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    return pref.getString('myLang')!;
   }
 
   AndroidOptions _getAndroidOptions() => const AndroidOptions(

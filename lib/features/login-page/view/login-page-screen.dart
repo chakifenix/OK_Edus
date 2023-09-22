@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 // import 'package:http/http.dart';
@@ -8,6 +9,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:ok_edus/core/api/Networking.dart';
 import 'package:ok_edus/core/api/login_service.dart';
 import 'package:ok_edus/features/main-bar-page/view/main-bar-screen.dart';
+import 'package:ok_edus/gradiend.dart';
 import 'package:ok_edus/main.dart';
 import 'package:ok_edus/model/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -21,13 +23,27 @@ class LoginPageScreen extends StatefulWidget {
 
 class _LoginPageScreenState extends State<LoginPageScreen> {
   String? token;
+  int classN = 0;
   bool? isLogged;
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getClass();
+  }
+
   final _login = LoginService();
 
   var emailController = TextEditingController();
 
   var passwordController = TextEditingController();
+
+  void getClass() async {
+    var str = await SubjectsService.getClass();
+    classN = int.parse(str!);
+    print(classN);
+    setState(() {});
+  }
 
   Future<Map<String, dynamic>> login(String a, String b) async {
     Dio dio = Dio();
@@ -40,7 +56,11 @@ class _LoginPageScreenState extends State<LoginPageScreen> {
 
       Map<String, dynamic> responseData = response.data;
       token = responseData['access_token'];
-      await SubjectsService.storeToken(token!);
+      String refreshToken = responseData['refresh_token'];
+      classN = responseData['profile']['class'];
+      String studentName = responseData['profile']['name'];
+      await SubjectsService.storegeInfo(
+          token!, refreshToken, classN, studentName);
       return responseData; // Возвращаем JSON-данные вместо response
     } catch (e) {
       if (e is DioError) {
@@ -56,13 +76,13 @@ class _LoginPageScreenState extends State<LoginPageScreen> {
   @override
   Widget build(BuildContext context) {
     final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+
     return Container(
-      decoration: BoxDecoration(
-          gradient: LinearGradient(
-        begin: Alignment(0.74, -0.67),
-        end: Alignment(-0.74, 0.67),
-        colors: [Color(0xFF8BE1DE), Color(0xFF398FA3)],
-      )),
+      decoration: (classN >= 5 && classN <= 9)
+          ? MyTheme.teenColor()
+          : (classN >= 1 && classN <= 4)
+              ? MyTheme.kidsColor()
+              : MyTheme.adultColor(),
       child: Scaffold(
         //resizeToAvoidBottomInset: false,
         backgroundColor: Colors.transparent,
@@ -107,28 +127,28 @@ class _LoginPageScreenState extends State<LoginPageScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text(
-                    'Оқушының кабинеті',
+                    'login-title',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 24,
                         fontFamily: 'SF Pro Display',
                         fontWeight: FontWeight.w700),
-                  ),
+                  ).tr(),
                   const SizedBox(
                     height: 27,
                   ),
-                  const SizedBox(
+                  SizedBox(
                     width: 309,
                     child: Text(
-                      'Логиніңізді мұғалімнен сұрау арқылы немесе ата-ана кабинетінен қарап біле аласыздар!',
+                      'login-subtitle',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           color: Colors.white,
                           fontSize: 16,
                           fontFamily: 'Roboto',
                           fontWeight: FontWeight.w400),
-                    ),
+                    ).tr(),
                   ),
                   const SizedBox(
                     height: 76,
@@ -182,6 +202,7 @@ class _LoginPageScreenState extends State<LoginPageScreen> {
                               await SharedPreferences.getInstance();
                           isLogged = prefs.getBool('isLogged');
                           await prefs.setBool('isLogged', true);
+
                           Navigator.of(context).pushAndRemoveUntil(
                               MaterialPageRoute(
                                   builder: (context) => MainBarScreen()),
@@ -206,7 +227,7 @@ class _LoginPageScreenState extends State<LoginPageScreen> {
                         //     await Connectivity().checkConnectivity();
                         //     if(connectivityResult==connectivityResult.mobile)
                       },
-                      child: Text('Login'))
+                      child: Text('login').tr())
                 ],
               ),
             ))

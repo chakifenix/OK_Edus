@@ -1,6 +1,13 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:ok_edus/features/change-password-page/view/change-password-screen.dart';
 import 'package:ok_edus/features/login-page/view/login-page-screen.dart';
+import 'package:ok_edus/features/main-bar-page/view/main-screen.dart';
+import 'package:ok_edus/features/main-bar-page/view/profile-screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import '../../language-page/view/language-screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -18,9 +25,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        leading: BackButton(color: Colors.black),
+        leading: BackButton(
+          onPressed: () {
+            Navigator.pop(context, context.locale);
+          },
+          color: Colors.black,
+        ),
         title: Text(
-          'Баптаулар',
+          'settings'.tr(),
           style: TextStyle(
             color: Color(0xFF424242),
             fontSize: 20,
@@ -51,7 +63,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     //width: 100,
                     //height: 100,
                     // color: Colors.red,
-                    child: Text('Push хабарламасы'),
+                    child: Text('news'.tr()),
                   ),
                   Container(
                       // color: Colors.green,
@@ -85,7 +97,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     //width: 100,
                     //height: 100,
                     // color: Colors.red,
-                    child: Text('SMS хабарламасы'),
+                    child: Text('sms'.tr()),
                   ),
                   Container(
                       // color: Colors.green,
@@ -106,33 +118,39 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           Padding(
             padding: const EdgeInsets.only(left: 23, right: 23),
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border(bottom: BorderSide(color: Colors.grey)),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Container(
-                    padding: EdgeInsets.only(top: 16, left: 16, bottom: 21),
-                    //width: 100,
-                    //height: 100,
-                    // color: Colors.red,
-                    child: Text('Тілді өзгерту'),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      right: 16,
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => LanguageScreen()));
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border(bottom: BorderSide(color: Colors.grey)),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.only(top: 16, left: 16, bottom: 21),
+                      //width: 100,
+                      //height: 100,
+                      // color: Colors.red,
+                      child: Text('change-lang'.tr()),
                     ),
-                    child: RotatedBox(
-                        quarterTurns: 2,
-                        child: Icon(
-                          Icons.arrow_back_ios,
-                          color: Colors.grey,
-                        )),
-                  )
-                ],
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        right: 16,
+                      ),
+                      child: RotatedBox(
+                          quarterTurns: 2,
+                          child: Icon(
+                            Icons.arrow_back_ios,
+                            color: Colors.grey,
+                          )),
+                    )
+                  ],
+                ),
               ),
             ),
           ),
@@ -141,33 +159,41 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           Padding(
             padding: const EdgeInsets.only(left: 23, right: 23),
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border(bottom: BorderSide(color: Colors.grey)),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Container(
-                    padding: EdgeInsets.only(top: 16, left: 16, bottom: 21),
-                    //width: 100,
-                    //height: 100,
-                    // color: Colors.red,
-                    child: Text('Құпиясөзді өзгерту'),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      right: 16,
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ChangePasswordScreen()));
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border(bottom: BorderSide(color: Colors.grey)),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.only(top: 16, left: 16, bottom: 21),
+                      //width: 100,
+                      //height: 100,
+                      // color: Colors.red,
+                      child: Text('change-pass'.tr()),
                     ),
-                    child: RotatedBox(
-                        quarterTurns: 2,
-                        child: Icon(
-                          Icons.arrow_back_ios,
-                          color: Colors.grey,
-                        )),
-                  )
-                ],
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        right: 16,
+                      ),
+                      child: RotatedBox(
+                          quarterTurns: 2,
+                          child: Icon(
+                            Icons.arrow_back_ios,
+                            color: Colors.grey,
+                          )),
+                    )
+                  ],
+                ),
               ),
             ),
           ),
@@ -189,7 +215,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     //width: 100,
                     //height: 100,
                     // color: Colors.red,
-                    child: Text('Жиі қойылатын сұрақтар'),
+                    child: Text('faq'.tr()),
                   ),
                 ],
               ),
@@ -208,12 +234,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    padding: EdgeInsets.only(top: 16, left: 16, bottom: 21),
-                    //width: 100,
-                    //height: 100,
-                    // color: Colors.red,
-                    child: Text('Техникалық қолдау'),
+                  GestureDetector(
+                    onTap: () async {
+                      final url = 'https://support.edus.kz/';
+                      if (await canLaunch(url)) {
+                        await launch(url);
+                      } else {
+                        throw 'Could not launch $url';
+                      }
+                    },
+                    child: Container(
+                      padding: EdgeInsets.only(top: 16, left: 16, bottom: 21),
+                      //width: 100,
+                      //height: 100,
+                      // color: Colors.red,
+                      child: Text('support'.tr()),
+                    ),
                   ),
                 ],
               ),
@@ -235,14 +271,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           builder: (context) => LoginPageScreen()),
                       (route) => false);
                 },
-                child: Text('Шығу'),
+                child: Text('out'.tr()),
                 style: ButtonStyle(
                     minimumSize:
                         MaterialStateProperty.all(Size(double.infinity, 40)),
                     backgroundColor: MaterialStateProperty.all(
                       Colors.red,
                     ))),
-          )
+          ),
         ],
       ),
     );

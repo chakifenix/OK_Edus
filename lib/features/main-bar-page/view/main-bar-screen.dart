@@ -1,8 +1,11 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:ok_edus/core/api/Networking.dart';
 import 'package:ok_edus/features/main-bar-page/view/chat-screen.dart';
 import 'package:ok_edus/features/main-bar-page/view/main-screen.dart';
 import 'package:ok_edus/features/main-bar-page/view/profile-screen.dart';
 import 'package:ok_edus/features/main-bar-page/view/school-screen.dart';
+import 'package:ok_edus/gradiend.dart';
 
 class MainBarScreen extends StatefulWidget {
   const MainBarScreen({super.key});
@@ -13,18 +16,31 @@ class MainBarScreen extends StatefulWidget {
 
 class _MainBarScreenState extends State<MainBarScreen> {
   int _selectedIndex = 0;
+  int classN = 0;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getClass();
+  }
+
+  void getClass() async {
+    var str = await SubjectsService.getClass();
+    classN = int.parse(str!);
+    print(classN);
+    setState(() {});
+  }
 
   final tabs = [MainScreen(), SchoolScreen(), ChatScreen(), ProfileScreen()];
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-          gradient: LinearGradient(
-        begin: Alignment(0.74, -0.67),
-        end: Alignment(-0.74, 0.67),
-        colors: [Color(0xFF8BE1DE), Color(0xFF398FA3)],
-      )),
+      decoration: (classN >= 5 && classN <= 9)
+          ? MyTheme.teenColor()
+          : (classN >= 1 && classN <= 4)
+              ? MyTheme.kidsColor()
+              : MyTheme.adultColor(),
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: Colors.transparent,
@@ -50,18 +66,18 @@ class _MainBarScreenState extends State<MainBarScreen> {
                       items: [
                         BottomNavigationBarItem(
                           icon: Icon(Icons.home),
-                          label: 'Басты Бет',
+                          label: 'main-page'.tr(),
                         ),
                         BottomNavigationBarItem(
                           icon: Image.asset('images/r.png',
                               color: (_selectedIndex == 1)
                                   ? Colors.blue
                                   : Colors.grey),
-                          label: 'Мектеп',
+                          label: 'school'.tr(),
                         ),
                         BottomNavigationBarItem(
                           icon: Icon(Icons.camera),
-                          label: 'Camera',
+                          label: 'Чат',
                         ),
                         BottomNavigationBarItem(
                           icon: Icon(Icons.person),

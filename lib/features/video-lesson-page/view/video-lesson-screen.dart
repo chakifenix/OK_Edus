@@ -1,5 +1,9 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+
+import '../../../core/api/Networking.dart';
+import '../../../gradiend.dart';
 
 class VideoLessonScreen extends StatefulWidget {
   String url1;
@@ -17,11 +21,19 @@ class _VideoLessonScreenState extends State<VideoLessonScreen> {
   String topic;
   String des;
   _VideoLessonScreenState(this.url2, this.topic, this.des);
+  int classN = 0;
+
+  void getClass() async {
+    var str = await SubjectsService.getClass();
+    classN = int.parse(str!);
+    setState(() {});
+  }
 
   bool _fullScreen = false;
 
   @override
   void initState() {
+    getClass();
     // TODO: implement initState
     super.initState();
     final url = url2;
@@ -71,12 +83,11 @@ class _VideoLessonScreenState extends State<VideoLessonScreen> {
               return Container(
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height,
-                decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                  begin: Alignment(0.74, -0.67),
-                  end: Alignment(-0.74, 0.67),
-                  colors: [Color(0xFF8BE1DE), Color(0xFF398FA3)],
-                )),
+                decoration: (classN >= 5 && classN <= 9)
+                    ? MyTheme.teenColor()
+                    : (classN >= 1 && classN <= 4)
+                        ? MyTheme.kidsColor()
+                        : MyTheme.adultColor(),
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
@@ -104,7 +115,7 @@ class _VideoLessonScreenState extends State<VideoLessonScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Сабақ тақырыбы:',
+                                'Сабақ тақырыбы:'.tr(),
                                 style: TextStyle(
                                   color: Color(0xFF1E1E1E),
                                   fontSize: 16,
@@ -135,7 +146,7 @@ class _VideoLessonScreenState extends State<VideoLessonScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Қосымша ақпарат',
+                                'Қосымша ақпарат'.tr(),
                                 style: TextStyle(
                                   color: Color(0xFF1E1E1E),
                                   fontSize: 16,

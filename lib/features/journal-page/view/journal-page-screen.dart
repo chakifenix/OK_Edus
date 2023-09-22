@@ -1,8 +1,10 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:ok_edus/core/api/Networking.dart';
+import 'package:ok_edus/gradiend.dart';
 import 'package:ok_edus/model/chetvert-grades-model.dart';
 
 class JournalPageScreen extends StatefulWidget {
@@ -15,11 +17,13 @@ class JournalPageScreen extends StatefulWidget {
 class _JournalPageScreenState extends State<JournalPageScreen> {
   var tab = 0;
   var tap = 1;
+  int classN = 0;
 
   Future<Map<String, dynamic>> _fetchData() async {
     var scopedToken = await SubjectsService.getToken();
-    final response =
-        await SubjectsService.fetchSubjects('/jurnal-today', '$scopedToken');
+    String lang = await SubjectsService.getLang();
+    final response = await SubjectsService.fetchSubjects(
+        '${lang}/jurnal-today', '$scopedToken');
     if (response.statusCode == 200) {
       return response.data;
     } else {
@@ -29,8 +33,9 @@ class _JournalPageScreenState extends State<JournalPageScreen> {
 
   Future<Map<String, dynamic>> _fetchPredmets() async {
     var scopedToken = await SubjectsService.getToken();
-    final response =
-        await SubjectsService.fetchSubjects('/predmets-list', '$scopedToken');
+    String lang = await SubjectsService.getLang();
+    final response = await SubjectsService.fetchSubjects(
+        '${lang}/predmets-list', '$scopedToken');
     if (response.statusCode == 200) {
       return response.data;
     } else {
@@ -38,11 +43,18 @@ class _JournalPageScreenState extends State<JournalPageScreen> {
     }
   }
 
+  void getClass() async {
+    var str = await SubjectsService.getClass();
+    classN = int.parse(str!);
+    setState(() {});
+  }
+
   var selectedValue = 'Option1';
 
   @override
   void initState() {
     super.initState();
+    getClass();
   }
 
   @override
@@ -68,12 +80,11 @@ class _JournalPageScreenState extends State<JournalPageScreen> {
           body: Container(
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height,
-              decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                begin: Alignment(0.74, -0.67),
-                end: Alignment(-0.74, 0.67),
-                colors: [Color(0xFF8BE1DE), Color(0xFF398FA3)],
-              )),
+              decoration: (classN >= 5 && classN <= 9)
+                  ? MyTheme.teenColor()
+                  : (classN >= 1 && classN <= 4)
+                      ? MyTheme.kidsColor()
+                      : MyTheme.adultColor(),
               child: Padding(
                 padding: const EdgeInsets.only(top: 27),
                 child: Column(
@@ -92,17 +103,42 @@ class _JournalPageScreenState extends State<JournalPageScreen> {
                         ),
                         unselectedLabelColor: Color(0xFF71727A),
                         indicator: BoxDecoration(
-                            color: Colors.blue,
+                            gradient: ((classN >= 5 && classN <= 9)
+                                ? LinearGradient(
+                                    begin: Alignment(0.74, -0.67),
+                                    end: Alignment(-0.74, 0.67),
+                                    colors: [
+                                      Color(0xFF60B0F5),
+                                      Color(0xFF1572C3)
+                                    ],
+                                  )
+                                : (classN >= 1 && classN <= 4)
+                                    ? LinearGradient(
+                                        begin: Alignment(0.74, -0.67),
+                                        end: Alignment(-0.74, 0.67),
+                                        colors: [
+                                          Color(0xFFFFC107),
+                                          Color(0xFFFFC107)
+                                        ],
+                                      )
+                                    : LinearGradient(
+                                        begin: Alignment(0.74, -0.67),
+                                        end: Alignment(-0.74, 0.67),
+                                        colors: [
+                                          Color(0xFFFFC107),
+                                          Color(0xFFFFC107)
+                                        ],
+                                      )),
                             borderRadius: BorderRadius.circular(16)),
                         tabs: [
                           Tab(
-                            text: 'Бүгін',
+                            text: 'today'.tr(),
                           ),
                           Tab(
-                            text: 'Пәндер бойынша',
+                            text: 'predmets'.tr(),
                           ),
                           Tab(
-                            text: 'Тоқсандық',
+                            text: 'toksandik'.tr(),
                           ),
                         ],
                       ),
@@ -122,7 +158,7 @@ class _JournalPageScreenState extends State<JournalPageScreen> {
                                     height: 39,
                                     width: MediaQuery.of(context).size.width,
                                     //color: Colors.red,
-                                    child: const Padding(
+                                    child: Padding(
                                       padding: EdgeInsets.only(
                                           left: 25,
                                           top: 10,
@@ -133,7 +169,7 @@ class _JournalPageScreenState extends State<JournalPageScreen> {
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
-                                            'Сабақ кестесі',
+                                            'schedule'.tr(),
                                             style: TextStyle(
                                               color: Colors.black,
                                               fontSize: 16,
@@ -143,7 +179,7 @@ class _JournalPageScreenState extends State<JournalPageScreen> {
                                             textAlign: TextAlign.left,
                                           ),
                                           Text(
-                                            'Баға',
+                                            'mark'.tr(),
                                             style: TextStyle(
                                               color: Colors.black,
                                               fontSize: 16,
@@ -256,8 +292,9 @@ class _JournalPageScreenState extends State<JournalPageScreen> {
 class ChetvertGrades extends StatelessWidget {
   Future<Map<String, dynamic>> _fetchChetvertGrades() async {
     var scopedToken = await SubjectsService.getToken();
-    final response =
-        await SubjectsService.fetchSubjects('/chetvert-grades', '$scopedToken');
+    String lang = await SubjectsService.getLang();
+    final response = await SubjectsService.fetchSubjects(
+        '${lang}/chetvert-grades', '$scopedToken');
     if (response.statusCode == 200) {
       return response.data;
     } else {
@@ -269,8 +306,9 @@ class ChetvertGrades extends StatelessWidget {
 
   Future<List<Chetvert>> getChetvertData() async {
     Dio dio = Dio();
+    String lang = await SubjectsService.getLang();
     final response = await dio.get(
-      'https://mobile.mektep.edu.kz/api_ok_edus/public/api/ru/chetvert-grades',
+      'https://mobile.mektep.edu.kz/api_ok_edus/public/api/${lang}/chetvert-grades',
       options: Options(headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -329,7 +367,7 @@ class ChetvertGrades extends StatelessWidget {
                                 width: 60,
                                 child: Center(
                                     child: Text(
-                                  '${i + 1}-тоқсан',
+                                  '${i + 1}${'quarter'.tr()}',
                                   style: TextStyle(
                                     color: Colors.black,
                                     fontSize: 12,
@@ -576,13 +614,13 @@ class _JournalByPredmetState extends State<JournalByPredmet> {
   // ];
 
   List<String> chetvert = [
-    '1 четверть',
-    '2 четверть',
-    '3 четверть',
-    '4 четверть'
+    '1${'quarter'.tr()}',
+    '2${'quarter'.tr()}',
+    '3${'quarter'.tr()}',
+    '4${'quarter'.tr()}'
   ];
   int selectedValue1 = 1;
-  String selectedValue2 = '1 четверть';
+  String selectedValue2 = '1${'quarter'.tr()}';
   int selectedValue3 = 94967;
 
   FutureBuilder<Map<String, dynamic>> fBuilder(String a, String b, String c) {

@@ -1,10 +1,13 @@
 import 'dart:convert';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:ok_edus/core/api/Networking.dart';
 import 'package:ok_edus/features/video-lessons-list/view/video-lessons-list-screen.dart';
 import 'package:ok_edus/model/res-model.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../../../gradiend.dart';
 
 class EduResourcesScreen extends StatefulWidget {
   const EduResourcesScreen({super.key});
@@ -14,6 +17,20 @@ class EduResourcesScreen extends StatefulWidget {
 }
 
 class _EduResourcesScreenState extends State<EduResourcesScreen> {
+  int classN = 0;
+  void getClass() async {
+    var str = await SubjectsService.getClass();
+    classN = int.parse(str!);
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getClass();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,7 +38,7 @@ class _EduResourcesScreenState extends State<EduResourcesScreen> {
         leading: BackButton(color: Color(0xFF1E88E5)),
         backgroundColor: Colors.white,
         title: Text(
-          'Оқу материалдары',
+          'edu-res'.tr(),
           style: TextStyle(
             color: Color(0xFF1F2024),
             fontSize: 20,
@@ -33,12 +50,11 @@ class _EduResourcesScreenState extends State<EduResourcesScreen> {
       body: Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
-        decoration: BoxDecoration(
-            gradient: LinearGradient(
-          begin: Alignment(0.74, -0.67),
-          end: Alignment(-0.74, 0.67),
-          colors: [Color(0xFF8BE1DE), Color(0xFF398FA3)],
-        )),
+        decoration: (classN >= 5 && classN <= 9)
+            ? MyTheme.teenColor()
+            : (classN >= 1 && classN <= 4)
+                ? MyTheme.kidsColor()
+                : MyTheme.adultColor(),
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
@@ -61,7 +77,7 @@ class _EduResourcesScreenState extends State<EduResourcesScreen> {
                   Padding(
                     padding: const EdgeInsets.only(top: 18, bottom: 24),
                     child: Text(
-                      'Видеосабақтар',
+                      'videolesson'.tr(),
                       style: TextStyle(
                         color: Color(0xFF1E1E1E),
                         fontSize: 20,
@@ -91,7 +107,7 @@ class _EduResourcesScreenState extends State<EduResourcesScreen> {
                           width: 15,
                         ),
                         Text(
-                          'Пәндік видеосабақтар',
+                          'videolesson'.tr(),
                           style: TextStyle(
                             color: Color(0xFF1E1E1E),
                             fontSize: 18,
@@ -114,7 +130,7 @@ class _EduResourcesScreenState extends State<EduResourcesScreen> {
             Padding(
               padding: const EdgeInsets.only(left: 15),
               child: Text(
-                'Ресурстар',
+                'resource'.tr(),
                 style: TextStyle(
                   color: Color(0xFF1E1E1E),
                   fontSize: 20,
@@ -141,8 +157,9 @@ class Resources extends StatelessWidget {
 
   Future<List<ResModel>> getRes() async {
     var scopedToken = await SubjectsService.getToken();
+    String lang = await SubjectsService.getLang();
     final response = await SubjectsService.fetchSubjects(
-        '/education-recources', '$scopedToken');
+        '${lang}/education-recources', '$scopedToken');
     var data = jsonDecode(response.toString());
 
     if (response.statusCode == 200) {

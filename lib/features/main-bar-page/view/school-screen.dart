@@ -1,8 +1,10 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:ok_edus/features/birlestik-page/view/birlestik-screen.dart';
 import 'package:ok_edus/features/edu-resources-page/view/edu-resources-screen.dart';
 import 'package:ok_edus/features/homework-page/view/homework-main-screen.dart';
+import 'package:ok_edus/features/info-page/view/info-screen.dart';
 import 'package:ok_edus/features/journal-page/view/journal-page-screen.dart';
 import 'package:ok_edus/features/predmets-list-page/view/predmets-list-screen.dart';
 import 'package:ok_edus/features/schedule-page/view/schedule-page-screen.dart';
@@ -20,24 +22,19 @@ class _SchoolScreenState extends State<SchoolScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Мектеп',
+          'school',
           style: TextStyle(
             color: Color(0xFF424242),
             fontSize: 20,
             fontFamily: 'SF Pro Display',
             fontWeight: FontWeight.w500,
           ),
-        ),
+        ).tr(),
         backgroundColor: Colors.white,
         elevation: 0,
       ),
+      backgroundColor: Colors.transparent,
       body: Container(
-        decoration: BoxDecoration(
-            gradient: LinearGradient(
-          begin: Alignment(0.74, -0.67),
-          end: Alignment(-0.74, 0.67),
-          colors: [Color(0xFF8BE1DE), Color(0xFF398FA3)],
-        )),
         child: Column(
           children: [
             Container(
@@ -146,14 +143,14 @@ class _SchoolScreenState extends State<SchoolScreen> {
                               ),
                             ),
                             const Text(
-                              'Сабақ кесте',
+                              'schedule',
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 14,
                                 fontFamily: 'SF Pro Display',
                                 fontWeight: FontWeight.w400,
                               ),
-                            )
+                            ).tr()
                           ],
                         ),
                         Column(
@@ -182,14 +179,14 @@ class _SchoolScreenState extends State<SchoolScreen> {
                               ),
                             ),
                             Text(
-                              'Журнал',
+                              'journal',
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 14,
                                 fontFamily: 'SF Pro Display',
                                 fontWeight: FontWeight.w400,
                               ),
-                            )
+                            ).tr()
                           ],
                         ),
                         Column(
@@ -213,15 +210,15 @@ class _SchoolScreenState extends State<SchoolScreen> {
                                         SvgPicture.asset('images/Vector3.svg')),
                               ),
                             ),
-                            Text(
-                              'Пәндер',
+                            const Text(
+                              'predmets',
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 14,
                                 fontFamily: 'SF Pro Display',
                                 fontWeight: FontWeight.w400,
                               ),
-                            )
+                            ).tr()
                           ],
                         ),
                         GestureDetector(
@@ -244,14 +241,18 @@ class _SchoolScreenState extends State<SchoolScreen> {
                                     child:
                                         SvgPicture.asset('images/Vector4.svg')),
                               ),
-                              Text(
-                                'Үй жұмысы',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  fontFamily: 'SF Pro Display',
-                                  fontWeight: FontWeight.w400,
-                                ),
+                              Container(
+                                width: 65,
+                                child: Text(
+                                  'homework',
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                    fontFamily: 'SF Pro Display',
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ).tr(),
                               )
                             ],
                           ),
@@ -285,14 +286,14 @@ class _SchoolScreenState extends State<SchoolScreen> {
                                         SvgPicture.asset('images/Vector5.svg')),
                               ),
                               Text(
-                                'Бірлестік',
+                                'birlestik',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 14,
                                   fontFamily: 'SF Pro Display',
                                   fontWeight: FontWeight.w400,
                                 ),
-                              )
+                              ).tr()
                             ],
                           ),
                         ),
@@ -322,7 +323,7 @@ class _SchoolScreenState extends State<SchoolScreen> {
                               Container(
                                 width: 65,
                                 child: Text(
-                                  'Оқу материалдары',
+                                  'edu-res',
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
                                     color: Colors.white,
@@ -330,7 +331,7 @@ class _SchoolScreenState extends State<SchoolScreen> {
                                     fontFamily: 'SF Pro Display',
                                     fontWeight: FontWeight.w400,
                                   ),
-                                ),
+                                ).tr(),
                               )
                             ],
                           ),
@@ -338,28 +339,36 @@ class _SchoolScreenState extends State<SchoolScreen> {
                         SizedBox(
                           width: 22,
                         ),
-                        Column(
-                          children: [
-                            Container(
-                              height: 65,
-                              width: 65,
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(10)),
-                              child: Center(
-                                  child:
-                                      SvgPicture.asset('images/Vector7.svg')),
-                            ),
-                            Text(
-                              'Инфо',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 14,
-                                fontFamily: 'SF Pro Display',
-                                fontWeight: FontWeight.w400,
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => InfoScreen()));
+                          },
+                          child: Column(
+                            children: [
+                              Container(
+                                height: 65,
+                                width: 65,
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(10)),
+                                child: Center(
+                                    child:
+                                        SvgPicture.asset('images/Vector7.svg')),
                               ),
-                            )
-                          ],
+                              Text(
+                                'Инфо',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                  fontFamily: 'SF Pro Display',
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                       ],
                     ),
@@ -367,14 +376,14 @@ class _SchoolScreenState extends State<SchoolScreen> {
                   Padding(
                     padding: const EdgeInsets.only(top: 26, left: 24),
                     child: Text(
-                      'Қосымша',
+                      'optional',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 20,
                         fontFamily: 'SF Pro Display',
                         fontWeight: FontWeight.w500,
                       ),
-                    ),
+                    ).tr(),
                   ),
                   Padding(
                     padding:
@@ -435,14 +444,14 @@ class _SchoolScreenState extends State<SchoolScreen> {
                               ),
                             ),
                             Text(
-                              'Видеосабақ',
+                              'videolesson',
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 14,
                                 fontFamily: 'SF Pro Display',
                                 fontWeight: FontWeight.w400,
                               ),
-                            )
+                            ).tr()
                           ],
                         ),
                         Column(
@@ -484,14 +493,14 @@ class _SchoolScreenState extends State<SchoolScreen> {
                                   child: SvgPicture.asset('images/zhazba.svg')),
                             ),
                             Text(
-                              'Жазба',
+                              'write',
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 14,
                                 fontFamily: 'SF Pro Display',
                                 fontWeight: FontWeight.w400,
                               ),
-                            )
+                            ).tr()
                           ],
                         ),
                       ],

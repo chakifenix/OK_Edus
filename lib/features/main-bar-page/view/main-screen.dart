@@ -1,11 +1,7 @@
 import 'dart:convert';
 
-import 'package:circular_bottom_navigation/tab_item.dart';
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:circular_bottom_navigation/circular_bottom_navigation.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:ok_edus/core/api/Networking.dart';
@@ -21,25 +17,37 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+  int classN = 0;
   var currentIndex;
   var currentTime1;
   var timeStart;
   var timeEnd;
   var myTimeMin;
+  var name;
   MainPageModel? glavnyiPage;
   @override
   void initState() {
     super.initState();
     initializeDateFormatting();
+    getStorageInfo();
+  }
 
-    // _navigationController = CircularBottomNavigationController(selectedPos);
+  void getStorageInfo() async {
+    var str = await SubjectsService.getClass();
+    name = await SubjectsService.getName();
+    classN = int.parse(str!);
+    print(classN);
+    print(name);
+    setState(() {});
   }
 
   Future<Map<String, dynamic>> fetchApi() async {
     var scopedToken = await SubjectsService.getToken();
-    var response =
-        await SubjectsService.fetchSubjects('/main-page', '$scopedToken');
+    String lang = await SubjectsService.getLang();
+    var response = await SubjectsService.fetchSubjects(
+        '${lang}/main-page', '$scopedToken');
     var data = jsonDecode(response.toString());
+    print(lang);
     print(data);
     if (response.statusCode == 200) {
       glavnyiPage = MainPageModel.fromJson(data);
@@ -61,7 +69,6 @@ class _MainScreenState extends State<MainScreen> {
             AsyncSnapshot<Map<String, dynamic>> snapshot) {
           if (snapshot.hasData) {
             var jsonListDiyary = snapshot.data!['diary'] as List<dynamic>;
-            var jsonListNews = snapshot.data!['news_list'] as List<dynamic>;
 
             DateTime currenTime = DateTime.now();
 
@@ -106,25 +113,25 @@ class _MainScreenState extends State<MainScreen> {
             print(formattedDate);
             //print('${today.hour}, ${today.minute}');
             var dayOfWeek = DateFormat('EEEE').format(today);
+            print(dayOfWeek);
             //print(currentIndex);
-            String dateStr = '${today.day}.${today.month}.${today.year}';
-            if (dayOfWeek == 'Monday') {
-              dayOfWeek = 'Дүйсенбі';
-            } else if (dayOfWeek == 'Tuesday') {
-              dayOfWeek = 'Сейсенбі';
-            } else if (dayOfWeek == 'Wednesday') {
-              dayOfWeek = 'Сәрсенбі';
-            } else if (dayOfWeek == 'Thursday') {
-              dayOfWeek = 'Бейсенбі';
-            } else if (dayOfWeek == 'Friday') {
-              dayOfWeek = 'Жұма';
-            } else if (dayOfWeek == 'Saturday') {
-              dayOfWeek = 'Сенбі';
+            //String dateStr = '${today.day}.${today.month}.${today.year}';
+            if (dayOfWeek == 'понедельник') {
+              dayOfWeek = 'monday'.tr();
+            } else if (dayOfWeek == 'вторник') {
+              dayOfWeek = 'tuesday'.tr();
+            } else if (dayOfWeek == 'среда') {
+              dayOfWeek = 'wednesday'.tr();
+            } else if (dayOfWeek == 'четверг') {
+              dayOfWeek = 'thursday'.tr();
+            } else if (dayOfWeek == 'пятница') {
+              dayOfWeek = 'friday'.tr();
+            } else if (dayOfWeek == 'суббота') {
+              dayOfWeek = 'saturday'.tr();
             } else {
-              dayOfWeek = 'Жексенбі';
+              dayOfWeek = 'sunday'.tr();
             }
-            return MainPageView(
-                formattedDate, dayOfWeek, jsonListDiyary, jsonListNews);
+            return MainPageView(dayOfWeek, jsonListDiyary);
           } else {
             return Center(
               child: CircularProgressIndicator(),
@@ -133,19 +140,10 @@ class _MainScreenState extends State<MainScreen> {
         });
   }
 
-  int _selectedIndex = 0;
   double iconSize = 24.0;
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-      iconSize = 36.0;
-    });
-  }
-
   final tabs = [];
 
-  Scaffold MainPageView(String dateStr, String dayOfWeek,
-      List<dynamic> jsonListDiyary, List<dynamic> jsonListNews) {
+  Scaffold MainPageView(String dayOfWeek, List<dynamic> jsonListDiyary) {
     return Scaffold(
       backgroundColor: Colors.transparent,
 
@@ -169,13 +167,13 @@ class _MainScreenState extends State<MainScreen> {
         backgroundColor: Colors.white,
         flexibleSpace: Container(decoration: const BoxDecoration()),
         title: Text(
-          'Басты Бет',
+          'main-page',
           style: TextStyle(
               color: Color(0xFF1E1E1E),
               fontSize: 20,
               fontFamily: 'SF Pro Display',
               fontWeight: FontWeight.w500),
-        ),
+        ).tr(),
         elevation: 0,
       ),
       body: Column(
@@ -193,41 +191,47 @@ class _MainScreenState extends State<MainScreen> {
                   left: 20, right: 20, bottom: 14, top: 14),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  Container(
+                      width: 60,
+                      height: 60,
+                      child: Image.asset('images/girl.png')),
+                  SizedBox(
+                    width: 20,
+                  ),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Бүгін',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 14,
-                            fontFamily: 'SF Pro Display',
-                            fontWeight: FontWeight.w400,
-                          )),
+                      Row(
+                        children: [
+                          Text(
+                            '${'welcome'.tr()} ${name}',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 20,
+                              fontFamily: 'SF Pro Display',
+                              fontWeight: FontWeight.w500,
+                              height: 0,
+                            ),
+                          ),
+                        ],
+                      ),
                       SizedBox(
                         height: 12,
                       ),
                       Text(
-                        '$dateStr',
+                        '${'ulgerim'.tr()} - 4,5',
                         style: TextStyle(
                           color: Colors.black,
-                          fontSize: 20,
+                          fontSize: 18,
                           fontFamily: 'SF Pro Display',
-                          fontWeight: FontWeight.w500,
+                          fontWeight: FontWeight.w400,
+                          height: 0,
                         ),
                       )
                     ],
                   ),
-                  Text(
-                    '$dayOfWeek',
-                    style: TextStyle(
-                      color: Color(0xFF1E1E1E),
-                      fontSize: 20,
-                      fontFamily: 'SF Pro Display',
-                      fontWeight: FontWeight.w500,
-                    ),
-                  )
                 ],
               ),
             ),
@@ -252,7 +256,11 @@ class _MainScreenState extends State<MainScreen> {
                               'subject_now',
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                color: Color(0xFF1E1E1E),
+                                color: (classN >= 5 && classN <= 9)
+                                    ? Colors.white
+                                    : (classN >= 1 && classN <= 4)
+                                        ? Color(0xFF1E1E1E)
+                                        : Colors.white,
                                 fontSize: 20,
                                 fontFamily: 'SF Pro Display',
                                 fontWeight: FontWeight.w400,
@@ -340,18 +348,22 @@ class _MainScreenState extends State<MainScreen> {
                           // color: Colors.white,
                           height: 44,
                           alignment: Alignment.centerLeft,
-                          child: const Padding(
+                          child: Padding(
                             padding: EdgeInsets.all(8.0),
                             child: Text(
-                              'Мектептегі шаралар',
+                              'school-activity',
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                color: Color(0xFF1E1E1E),
+                                color: (classN >= 5 && classN <= 9)
+                                    ? Colors.white
+                                    : (classN >= 1 && classN <= 4)
+                                        ? Color(0xFF1E1E1E)
+                                        : Colors.white,
                                 fontSize: 20,
                                 fontFamily: 'SF Pro Display',
                                 fontWeight: FontWeight.w400,
                               ),
-                            ),
+                            ).tr(),
                           ),
                         ),
                       ),
@@ -366,6 +378,7 @@ class _MainScreenState extends State<MainScreen> {
                               scrollDirection: Axis.horizontal,
                               itemCount: glavnyiPage!.newsList.length,
                               itemBuilder: (context, index) {
+                                print(glavnyiPage!.newsList[0].date);
                                 return Padding(
                                   padding: const EdgeInsets.only(
                                       left: 20, top: 10, bottom: 11),
@@ -426,11 +439,12 @@ class _MainScreenState extends State<MainScreen> {
                                                       time: glavnyiPage!
                                                           .newsList[index]
                                                           .date),
+                                                  //
                                                 ),
                                                 Container(
                                                   //color: Colors.white,
                                                   child: Text(
-                                                    'Мектеп әкімшілігі',
+                                                    'staff',
                                                     style: TextStyle(
                                                       color: Color(0xFF7A7A7A),
                                                       fontSize: 12,
@@ -439,7 +453,7 @@ class _MainScreenState extends State<MainScreen> {
                                                       fontWeight:
                                                           FontWeight.w400,
                                                     ),
-                                                  ),
+                                                  ).tr(),
                                                 ),
                                               ],
                                             ),
@@ -448,7 +462,7 @@ class _MainScreenState extends State<MainScreen> {
                                             ),
                                             Container(
                                               //color: Colors.white,
-                                              child: Text('Толығырақ'),
+                                              child: Text('more').tr(),
                                             ),
                                           ]),
                                     ),
@@ -476,14 +490,18 @@ class _MainScreenState extends State<MainScreen> {
                           child: Padding(
                             padding: const EdgeInsets.all(10.0),
                             child: Text(
-                              'Үй жұмысы',
+                              'homework',
                               style: TextStyle(
-                                color: Colors.black,
+                                color: (classN >= 5 && classN <= 9)
+                                    ? Colors.white
+                                    : (classN >= 1 && classN <= 4)
+                                        ? Color(0xFF1E1E1E)
+                                        : Colors.white,
                                 fontSize: 20,
                                 fontFamily: 'SF Pro Display',
                                 fontWeight: FontWeight.w400,
                               ),
-                            ),
+                            ).tr(),
                           ),
                         ),
                       ),
@@ -496,17 +514,17 @@ class _MainScreenState extends State<MainScreen> {
                               MediaQuery.of(context).size.width / 2.6 / 1.15,
                           alignment: Alignment.centerLeft,
                           child: HomeWork()),
-                      ElevatedButton(
-                          onPressed: () {
-                            setState(() {
-                              if (context.locale.languageCode == 'en') {
-                                context.setLocale(Locale('ru'));
-                              } else {
-                                context.setLocale(Locale('en'));
-                              }
-                            });
-                          },
-                          child: Text('Press'))
+                      // ElevatedButton(
+                      //     onPressed: () {
+                      //       setState(() {
+                      //         if (context.locale.languageCode == 'en') {
+                      //           context.setLocale(Locale('ru'));
+                      //         } else {
+                      //           context.setLocale(Locale('en'));
+                      //         }
+                      //       });
+                      //     },
+                      //     child: Text('Press'))
                     ]),
               ],
             ),
@@ -522,60 +540,141 @@ class Time extends StatelessWidget {
   var time;
 
   Time({required this.time});
+
+  String? date(String inputDate) {
+    final Map<String, String> monthMap = {
+      'қаңтар': '01',
+      'ақпан': '02',
+      'наурыз': '03',
+      'сәуір': '04',
+      'мамыр': '05',
+      'маусым': '06',
+      'шілде': '07',
+      'тамыз': '08',
+      'қыркүйек': '09',
+      'қазан': '10',
+      'қараша': '11',
+      'желтоқсан': '12',
+    };
+    final dateParts = inputDate.split(' ');
+    print(dateParts);
+    if (dateParts.length == 4) {
+      final day = dateParts[0];
+      final month = monthMap[dateParts[1].toLowerCase()] ?? '';
+      print(month);
+      final year = dateParts[2];
+      final time = dateParts[3];
+
+      if (day.isNotEmpty && month.isNotEmpty && year.isNotEmpty) {
+        return '$day.$month.$year $time';
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final List prefix = [
-      "just now",
-      "second(s) ago",
-      "minute(s) ago",
-      "сағат бұрын",
-      "day(s) ago",
-      "month(s) ago",
-      "year(s) ago"
+      "now".tr(),
+      "second".tr(),
+      "minute".tr(),
+      "hours".tr(),
+      "day-ago".tr(),
+      "month-ago".tr(),
+      "year-ago".tr()
     ];
     final dateTimeString = time;
-    final parsedDateTime = parseDateTime1(dateTimeString);
-    Duration diffirance = DateTime.now().difference(parsedDateTime);
-    var timeAgo;
-    print(diffirance);
-    if (diffirance.inDays == 0) {
-      if (diffirance.inMinutes == 0) {
-        if (diffirance.inSeconds < 20) {
-          timeAgo = prefix[0];
+    try {
+      print(dateTimeString);
+      final parsedDateTime = parseDateTime1(dateTimeString);
+      Duration diffirance = DateTime.now().difference(parsedDateTime);
+      var timeAgo;
+      print(diffirance);
+      if (diffirance.inDays == 0) {
+        if (diffirance.inMinutes == 0) {
+          if (diffirance.inSeconds < 20) {
+            timeAgo = prefix[0];
+          } else {
+            timeAgo = "${diffirance.inSeconds} ${prefix[1]}";
+          }
         } else {
-          timeAgo = "${diffirance.inSeconds} ${prefix[1]}";
+          if (diffirance.inMinutes > 59) {
+            timeAgo = "${(diffirance.inMinutes / 60).floor()} ${prefix[3]}";
+          } else {
+            timeAgo = "${diffirance.inMinutes} ${prefix[2]}";
+          }
         }
       } else {
-        if (diffirance.inMinutes > 59) {
-          timeAgo = "${(diffirance.inMinutes / 60).floor()} ${prefix[3]}";
+        if (diffirance.inDays > 30) {
+          if (((diffirance.inDays) / 30).floor() > 12) {
+            timeAgo = "${((diffirance.inDays / 30) / 12).floor()} ${prefix[6]}";
+          } else {
+            timeAgo = "${(diffirance.inDays / 30).floor()} ${prefix[5]}";
+          }
         } else {
-          timeAgo = "${diffirance.inMinutes} ${prefix[2]}";
+          timeAgo = "${diffirance.inDays} ${prefix[4]}";
         }
       }
-    } else {
-      if (diffirance.inDays > 30) {
-        if (((diffirance.inDays) / 30).floor() > 12) {
-          timeAgo = "${((diffirance.inDays / 30) / 12).floor()} ${prefix[6]}";
+      return Text(
+        timeAgo,
+        style: TextStyle(
+          color: Color(0xFF7A7A7A),
+          fontSize: 12,
+          fontFamily: 'SF Pro Display',
+          fontWeight: FontWeight.w400,
+        ),
+      );
+    } catch (e) {
+      final formatDate = date(dateTimeString);
+      print(formatDate);
+      final parsedDateTime = parseDateTime2(formatDate!);
+      Duration diffirance = DateTime.now().difference(parsedDateTime);
+      print(parsedDateTime);
+      var timeAgo;
+      print(diffirance);
+      if (diffirance.inDays == 0) {
+        if (diffirance.inMinutes == 0) {
+          if (diffirance.inSeconds < 20) {
+            timeAgo = prefix[0];
+          } else {
+            timeAgo = "${diffirance.inSeconds} ${prefix[1]}";
+          }
         } else {
-          timeAgo = "${(diffirance.inDays / 30).floor()} ${prefix[5]}";
+          if (diffirance.inMinutes > 59) {
+            timeAgo = "${(diffirance.inMinutes / 60).floor()} ${prefix[3]}";
+          } else {
+            timeAgo = "${diffirance.inMinutes} ${prefix[2]}";
+          }
         }
       } else {
-        timeAgo = "${diffirance.inDays} ${prefix[4]}";
+        if (diffirance.inDays > 30) {
+          if (((diffirance.inDays) / 30).floor() > 12) {
+            timeAgo = "${((diffirance.inDays / 30) / 12).floor()} ${prefix[6]}";
+          } else {
+            timeAgo = "${(diffirance.inDays / 30).floor()} ${prefix[5]}";
+          }
+        } else {
+          timeAgo = "${diffirance.inDays} ${prefix[4]}";
+        }
       }
+      return Text(
+        timeAgo,
+        style: TextStyle(
+          color: Color(0xFF7A7A7A),
+          fontSize: 12,
+          fontFamily: 'SF Pro Display',
+          fontWeight: FontWeight.w400,
+        ),
+      );
     }
-    return Text(
-      timeAgo,
-      style: TextStyle(
-        color: Color(0xFF7A7A7A),
-        fontSize: 12,
-        fontFamily: 'SF Pro Display',
-        fontWeight: FontWeight.w400,
-      ),
-    );
   }
 
   DateTime parseDateTime1(String dateTimeString) {
     final inputFormat = DateFormat('dd MMMM y HH:mm', 'ru');
+    return inputFormat.parse(dateTimeString);
+  }
+
+  DateTime parseDateTime2(String dateTimeString) {
+    final inputFormat = DateFormat('dd.MM.yyyy HH:mm', 'ru');
     return inputFormat.parse(dateTimeString);
   }
 }
@@ -584,8 +683,9 @@ class HomeWork extends StatelessWidget {
   List<GpageHomeworkModel> homeworkList = [];
   Future<Map<String, dynamic>> fetchApi() async {
     var scopedToken = await SubjectsService.getToken();
+    String lang = await SubjectsService.getLang();
     var response = await SubjectsService.fetchSubjects(
-        '/distance-schedule?page=1', '$scopedToken');
+        '${lang}/distance-schedule?page=1', '$scopedToken');
     var data = jsonDecode(response.toString());
     if (response.statusCode == 200) {
       for (Map<String, dynamic> index in data['list']) {
@@ -610,7 +710,6 @@ class HomeWork extends StatelessWidget {
             //print(snapshot.data.toString());
             var jsonListHome = snapshot.data!['list'] as List<dynamic>;
             //print(jsonListHome[0]);
-
             return ListView.builder(
               itemCount: homeworkList.length,
               itemBuilder: (context, index) {
@@ -644,7 +743,7 @@ class HomeWork extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      'Статус ${homeworkList[index].isAnswered == true ? 'Орындалды' : 'Орындалмады'}',
+                                      'Статус ${homeworkList[index].isAnswered == true ? 'done'.tr() : 'not-done'.tr()}',
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 12,
@@ -652,15 +751,15 @@ class HomeWork extends StatelessWidget {
                                         fontWeight: FontWeight.w400,
                                       ),
                                     ),
-                                    Text(
-                                      '${homeworkList[index].isAnswered == true ? 'true' : 'false'}',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 12,
-                                        fontFamily: 'SF Pro Display',
-                                        fontWeight: FontWeight.w400,
-                                      ),
-                                    )
+                                    // Text(
+                                    //   '${homeworkList[index].isAnswered == true ? 'true' : 'false'}',
+                                    //   style: TextStyle(
+                                    //     color: Colors.white,
+                                    //     fontSize: 12,
+                                    //     fontFamily: 'SF Pro Display',
+                                    //     fontWeight: FontWeight.w400,
+                                    //   ),
+                                    // )
                                   ])
                             ])),
                   ),
